@@ -86,7 +86,7 @@ export default function Home() {
       <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', height: '100vh', padding: 'clamp(1rem, 3vw, 2rem)' }}>
         
         {/* Central Content Area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', maxWidth: '1000px', width: '100%', margin: '0 auto', overflow: 'hidden' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', margin: '0 auto', overflow: 'hidden' }}>
           
           {/* Header */}
           <motion.div 
@@ -159,24 +159,24 @@ export default function Home() {
             className="custom-scrollbar"
           >
             {loading ? (
-              <div className="skeleton" style={{ height: '80px', width: '100%', maxWidth: '400px', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem' }}></div>
+              <div className="skeleton" style={{ height: '80px', width: '100%', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem' }}></div>
             ) : categories.length > 0 ? (
               <>
-                <motion.div variants={itemVariants} style={{ padding: '0.75rem 2rem', border: '2px solid rgba(59,130,246,0.3)', borderRadius: '2rem', color: '#fff', fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 600, background: 'rgba(59,130,246,0.1)' }}>
+                <motion.div variants={itemVariants} style={{ padding: '0.75rem 2rem', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#9ca3af', fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 600 }}>
                   Repobase
                 </motion.div>
 
                 {categories.map((cat, index) => (
-                  <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '800px' }}>
+                  <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                     
                     {/* Integrated Number and Arrow */}
                     <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <div style={{ width: '2px', height: '20px', background: 'rgba(59,130,246,0.6)' }}></div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', border: '2px solid rgba(59,130,246,0.6)', color: '#fff', fontSize: '1rem', fontWeight: 700 }}>
+                      <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)' }}></div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '1rem', fontWeight: 700 }}>
                         {index + 1}
                       </div>
-                      <div style={{ width: '2px', height: '20px', background: 'rgba(59,130,246,0.6)', position: 'relative' }}>
-                        <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(59,130,246,0.6)' }}></div>
+                      <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)', position: 'relative' }}>
+                        <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(255,255,255,0.2)' }}></div>
                       </div>
                     </motion.div>
 
