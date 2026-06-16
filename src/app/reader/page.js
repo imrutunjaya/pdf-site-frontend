@@ -234,46 +234,7 @@ export default function PdfReaderPage({ searchParams }) {
       {/* Main Content Area */}
       <main style={{ flex: 1, position: 'relative', overflow: 'hidden', padding: '0', background: isFullscreen ? '#000' : 'transparent', display: 'flex', flexDirection: 'column' }}>
         
-        {/* Fullscreen Exit Button */}
-        {isFullscreen && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              padding: '2rem',
-              zIndex: 100,
-            }}
-            onMouseEnter={() => {
-              setShowFsClose(true);
-              if (fsTimeoutRef.current) clearTimeout(fsTimeoutRef.current);
-            }}
-            onMouseLeave={() => {
-              fsTimeoutRef.current = setTimeout(() => setShowFsClose(false), 2000);
-            }}
-          >
-            <button 
-              onClick={toggleFullscreen}
-              style={{ 
-                background: 'rgba(0,0,0,0.6)', 
-                color: 'white', 
-                border: 'none', 
-                borderRadius: '50%', 
-                width: '48px', 
-                height: '48px',
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                cursor: 'pointer',
-                opacity: showFsClose ? 1 : 0,
-                transition: 'opacity 0.3s ease',
-                pointerEvents: showFsClose ? 'auto' : 'none'
-              }}
-            >
-              <X size={24} />
-            </button>
-          </div>
-        )}
+
 
         {/* Floating Side Nav - Left (Hidden in Mobile/Fullscreen for clean look, replaced by click areas) */}
         {!isSinglePageMode && !isFullscreen && (
@@ -324,7 +285,7 @@ export default function PdfReaderPage({ searchParams }) {
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    transition={{ type: 'tween', duration: 0.25, ease: 'easeInOut' }}
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={0.2}
