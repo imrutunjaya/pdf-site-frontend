@@ -1,14 +1,14 @@
 "use client";
-
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { Document, Page, pdfjs } from 'react-pdf';
+
+import dynamic from 'next/dynamic';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { ArrowLeft, Loader2, Download, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
 
-// Setup pdf worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+const Document = dynamic(() => import('react-pdf').then(mod => mod.Document), { ssr: false });
+const Page = dynamic(() => import('react-pdf').then(mod => mod.Page), { ssr: false });
 
 export default function PdfReaderPage({ searchParams }) {
   const resolvedParams = use(searchParams);
@@ -24,6 +24,12 @@ export default function PdfReaderPage({ searchParams }) {
     setWindowWidth(window.innerWidth);
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
+    
+    // Setup pdf worker dynamically to avoid SSR issues
+    import('react-pdf').then(({ pdfjs }) => {
+      pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+    });
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
