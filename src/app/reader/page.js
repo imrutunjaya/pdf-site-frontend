@@ -296,7 +296,7 @@ export default function PdfReaderPage({ searchParams }) {
                 }}
               >
                 {/* Left Page (or Single Page) */}
-                <div className={\`book-page \${isSinglePageMode ? 'mobile-page' : ''}\`} onClick={() => isSinglePageMode && changeSinglePage(1)}>
+                <div className={"book-page " + (isSinglePageMode ? 'mobile-page' : '')} onClick={() => isSinglePageMode && changeSinglePage(1)}>
                   <Page 
                     pageNumber={pageNumber} 
                     scale={renderScale} 
@@ -325,7 +325,7 @@ export default function PdfReaderPage({ searchParams }) {
         </div>
       </main>
       
-      <style>{\`
+      <style>{`
         /* Overrides to ensure the reader stays light regardless of global dark mode */
         .light-reader-theme * {
           box-sizing: border-box;
@@ -360,7 +360,7 @@ export default function PdfReaderPage({ searchParams }) {
           box-shadow: none !important;
           max-width: 100vw;
         }
-      \`}</style>
+      `}</style>
     </div>
   );
 }
