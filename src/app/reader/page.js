@@ -178,7 +178,7 @@ export default function PdfReaderPage({ searchParams }) {
           {/* Center: Pagination Pill */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
             <div style={{ background: '#e5e7eb', padding: '0.4rem 1rem', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 500, color: '#374151', minWidth: '140px', textAlign: 'center' }}>
-              {numPages ? `Pages ${pageNumber}${!isSinglePageMode && pageNumber + 1 <= numPages ? \`-\${pageNumber + 1}\` : ''} of ${numPages}` : 'Loading...'}
+              {numPages ? `Pages ${pageNumber}${!isSinglePageMode && pageNumber + 1 <= numPages ? '-' + (pageNumber + 1) : ''} of ${numPages}` : 'Loading...'}
             </div>
           </div>
 
