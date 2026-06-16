@@ -117,12 +117,12 @@ export default function Home() {
               <div className="skeleton" style={{ height: '80px', width: '100%', maxWidth: '400px', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem' }}></div>
             ) : categories.length > 0 ? (
               <>
-                <motion.div variants={itemVariants} style={{ padding: '0.5rem 1.5rem', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#9ca3af', fontFamily: 'monospace', fontSize: '0.875rem' }}>
-                  START_PROCESS
+                <motion.div variants={itemVariants} style={{ padding: '0.5rem 1.5rem', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#9ca3af', fontFamily: 'monospace', fontSize: '1rem', fontWeight: 600 }}>
+                  Repobase
                 </motion.div>
 
                 {categories.map((cat, index) => (
-                  <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '450px' }}>
+                  <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '800px' }}>
                     
                     {/* SVG Flowchart Arrow */}
                     <motion.div variants={itemVariants} style={{ height: '50px', display: 'flex', justifyContent: 'center' }}>
@@ -135,7 +135,7 @@ export default function Home() {
                     <motion.div variants={itemVariants} style={{ width: '100%' }}>
                       <Link href={`/categories/${encodeURIComponent(cat.name)}`} style={{ textDecoration: 'none' }}>
                         <motion.div 
-                          whileHover={{ scale: 1.03, backgroundColor: 'rgba(255,255,255,0.08)' }}
+                          whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
                           whileTap={{ scale: 0.98 }}
                           transition={{ duration: 0.2 }}
                           style={{ 
@@ -147,6 +147,9 @@ export default function Home() {
                             cursor: 'pointer'
                           }}
                         >
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '1rem', fontWeight: 700, flexShrink: 0 }}>
+                            {index + 1}
+                          </div>
                           <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.75rem', borderRadius: '0.75rem' }}>
                             <FolderOpen size={24} color="#60a5fa" />
                           </div>

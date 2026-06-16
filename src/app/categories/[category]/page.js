@@ -79,7 +79,7 @@ export default function CategoryDetailsPage({ params }) {
       <main style={{ padding: 'clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem)', flex: 1, position: 'relative', zIndex: 10, maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: '3rem' }}>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, margin: '0 0 0.5rem 0', letterSpacing: '-0.02em', background: 'linear-gradient(to right, #fff, #9ca3af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            System / {categoryName}
+            Repo / {categoryName}
           </h1>
           <p style={{ color: '#6b7280', fontSize: '1.125rem', margin: 0 }}>Access and manage modules in this directory.</p>
         </motion.div>
@@ -129,6 +129,9 @@ export default function CategoryDetailsPage({ params }) {
                   <div className="hover-bg" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s', position: 'relative', zIndex: 2 }}>
                     
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 200px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.875rem', fontWeight: 700, flexShrink: 0 }}>
+                        {index + 1}
+                      </div>
                       <FileText size={24} color="#ef4444" style={{ flexShrink: 0 }} />
                       <span style={{ fontSize: '1.125rem', fontWeight: 500, color: '#e5e7eb', wordBreak: 'break-word', lineHeight: 1.4 }}>{pdf.name.replace('.pdf', '')}</span>
                     </div>
