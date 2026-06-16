@@ -99,7 +99,7 @@ export default function PdfReaderPage({ searchParams }) {
         {/* Center: Pagination Pill */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, position: 'relative' }}>
           <div style={{ background: '#e5e7eb', padding: '0.4rem 1rem', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 500, color: '#374151', minWidth: '140px', textAlign: 'center' }}>
-            {numPages ? \`Pages \${pageNumber}\${!isSinglePageMode && pageNumber + 1 <= numPages ? \`-\${pageNumber + 1}\` : ''} of \${numPages}\` : 'Loading...'}
+            {numPages ? `Pages ${pageNumber}${!isSinglePageMode && pageNumber + 1 <= numPages ? `-${pageNumber + 1}` : ''} of ${numPages}` : 'Loading...'}
           </div>
           {/* Close 'X' overlapping the document area */}
           <button onClick={() => router.back()} style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translate(-50%, -50%)', width: '40px', height: '40px', background: '#374151', borderRadius: '50%', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '4px solid #f3f4f6', cursor: 'pointer', zIndex: 60, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = '#1f2937'} onMouseLeave={e => e.currentTarget.style.background = '#374151'}>
