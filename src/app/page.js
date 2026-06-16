@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FolderOpen, FileText, Info, X, Mail, Github, Globe } from 'lucide-react';
+import { FolderOpen, FileText, Info, X, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
@@ -225,10 +225,6 @@ export default function Home() {
                 <a href="mailto:pradhanmrutunjaya73@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem', textDecoration: 'none', color: '#e5e7eb', transition: 'background 0.2s' }} className="hover-bg">
                   <Mail size={20} color="#3b82f6" />
                   <span style={{ fontSize: '0.875rem' }}>pradhanmrutunjaya73@gmail.com</span>
-                </a>
-                <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem', textDecoration: 'none', color: '#e5e7eb', transition: 'background 0.2s' }} className="hover-bg">
-                  <Github size={20} color="#fff" />
-                  <span style={{ fontSize: '0.875rem' }}>github.com/imrutunjaya</span>
                 </a>
               </div>
             </motion.div>
