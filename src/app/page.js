@@ -39,14 +39,14 @@ export default function Home() {
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.2
       }
     }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 200, damping: 20 } }
+    hidden: { opacity: 0, y: 30 },
+    show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 20 } }
   };
 
   return (
@@ -54,7 +54,7 @@ export default function Home() {
       
       {/* Google Fonts for Handwritten Signature */}
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=WindSong:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
       </style>
 
       {/* Holographic Grid Background */}
@@ -65,8 +65,8 @@ export default function Home() {
           linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px)
         `,
         backgroundSize: '4rem 4rem',
-        maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 80%)',
-        WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 80%)',
+        maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+        WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
       }}></div>
       
       {/* Interactive Mouse Tracker */}
@@ -85,8 +85,8 @@ export default function Home() {
       {/* Main Dashboard Layout */}
       <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', height: '100vh', padding: 'clamp(1rem, 3vw, 2rem)' }}>
         
-        {/* Full-width Central Content Area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', maxWidth: '1800px', width: '100%', margin: '0 auto', overflow: 'hidden' }}>
+        {/* Central Content Area */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', maxWidth: '1000px', width: '100%', margin: '0 auto', overflow: 'hidden' }}>
           
           {/* Header */}
           <motion.div 
@@ -99,8 +99,8 @@ export default function Home() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               
               {/* Complex Animated SVG Graphic */}
-              <div style={{ position: 'relative', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <motion.svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"
+              <div style={{ position: 'relative', width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <motion.svg width="45" height="45" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"
                   animate={{ rotate: 360 }}
                   transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
                   style={{ position: 'absolute' }}
@@ -114,7 +114,7 @@ export default function Home() {
                   </defs>
                 </motion.svg>
                 
-                <motion.svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"
+                <motion.svg width="30" height="30" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"
                   animate={{ rotate: -360 }}
                   transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
                   style={{ position: 'absolute' }}
@@ -125,7 +125,7 @@ export default function Home() {
                 <motion.div 
                   animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{ width: '12px', height: '12px', background: '#3b82f6', borderRadius: '50%', boxShadow: '0 0 15px #3b82f6' }}
+                  style={{ width: '10px', height: '10px', background: '#3b82f6', borderRadius: '50%', boxShadow: '0 0 15px #3b82f6' }}
                 />
               </div>
 
@@ -140,102 +140,82 @@ export default function Home() {
               style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
               className="hover-bright"
             >
-              <span style={{ fontSize: 'clamp(1.5rem, 4vw, 2.25rem)', color: '#9ca3af', fontFamily: '"WindSong", cursive', transition: 'color 0.2s', paddingRight: '0.5rem' }}>
+              <span style={{ fontSize: 'clamp(1.2rem, 3vw, 1.75rem)', color: '#9ca3af', fontFamily: '"Caveat", cursive', transition: 'color 0.2s', paddingRight: '0.5rem' }}>
                 By-Mrutunjaya
               </span>
               <Info size={24} color="#3b82f6" style={{ transition: 'all 0.2s', opacity: 0.8 }} />
             </button>
           </motion.div>
 
-          {/* Flowchart Layout (Full Width Branching) */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 1rem 4rem 1rem' }} className="custom-scrollbar">
+          {/* Flowchart Layout (Linear Vertical) */}
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            style={{ 
+              display: 'flex', flexDirection: 'column', alignItems: 'center', 
+              flex: 1, overflowY: 'auto', padding: '1rem 0 4rem 0', width: '100%' 
+            }}
+            className="custom-scrollbar"
+          >
             {loading ? (
-              <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div className="skeleton" style={{ height: '80px', width: '300px', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem' }}></div>
-              </div>
+              <div className="skeleton" style={{ height: '80px', width: '100%', maxWidth: '400px', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem' }}></div>
             ) : categories.length > 0 ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-                
-                {/* Repobase Head Node */}
-                <motion.div 
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 10 }}
-                >
-                  <div style={{ 
-                    padding: '1rem 3rem', background: 'rgba(59,130,246,0.1)', border: '2px solid rgba(59,130,246,0.5)', 
-                    borderRadius: '3rem', color: '#fff', fontFamily: 'monospace', fontSize: '1.5rem', fontWeight: 700,
-                    boxShadow: '0 0 40px rgba(59,130,246,0.2)', backdropFilter: 'blur(10px)'
-                  }}>
-                    Repobase
-                  </div>
-                  {/* Stem going down */}
-                  <div style={{ width: '3px', height: '40px', background: 'linear-gradient(to bottom, rgba(59,130,246,0.6), rgba(59,130,246,0.2))' }}></div>
+              <>
+                <motion.div variants={itemVariants} style={{ padding: '0.75rem 2rem', border: '2px solid rgba(59,130,246,0.3)', borderRadius: '2rem', color: '#fff', fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 600, background: 'rgba(59,130,246,0.1)' }}>
+                  Repobase
                 </motion.div>
 
-                {/* Branches & Grid of Categories */}
-                <motion.div 
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="show"
-                  style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
-                    gap: '2.5rem', 
-                    width: '100%', 
-                    paddingTop: '1rem',
-                    position: 'relative'
-                  }}
-                >
-                  {/* Decorative horizontal top bracket (pseudo-element style) */}
-                  <div style={{ position: 'absolute', top: 0, left: '10%', right: '10%', height: '3px', background: 'linear-gradient(to right, transparent, rgba(59,130,246,0.3) 20%, rgba(59,130,246,0.3) 80%, transparent)', zIndex: 0 }}></div>
+                {categories.map((cat, index) => (
+                  <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '800px' }}>
+                    
+                    {/* Integrated Number and Arrow */}
+                    <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{ width: '2px', height: '20px', background: 'rgba(59,130,246,0.6)' }}></div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', border: '2px solid rgba(59,130,246,0.6)', color: '#fff', fontSize: '1rem', fontWeight: 700 }}>
+                        {index + 1}
+                      </div>
+                      <div style={{ width: '2px', height: '20px', background: 'rgba(59,130,246,0.6)', position: 'relative' }}>
+                        <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(59,130,246,0.6)' }}></div>
+                      </div>
+                    </motion.div>
 
-                  {categories.map((cat, index) => (
-                    <motion.div variants={itemVariants} key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', zIndex: 5 }}>
-                      
-                      {/* Connection Line from Bracket */}
-                      <div style={{ width: '2px', height: '20px', background: 'rgba(59,130,246,0.3)', marginBottom: '0.5rem' }}></div>
-                      
-                      <Link href={`/categories/${encodeURIComponent(cat.name)}`} style={{ textDecoration: 'none', width: '100%' }}>
+                    {/* Flowchart Node */}
+                    <motion.div variants={itemVariants} style={{ width: '100%' }}>
+                      <Link href={`/categories/${encodeURIComponent(cat.name)}`} style={{ textDecoration: 'none' }}>
                         <motion.div 
-                          whileHover={{ scale: 1.03, backgroundColor: 'rgba(255,255,255,0.06)' }}
+                          whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
                           whileTap={{ scale: 0.98 }}
+                          transition={{ duration: 0.2 }}
                           style={{ 
-                            display: 'flex', alignItems: 'center', gap: '1.25rem',
-                            padding: '1.5rem', background: 'rgba(255,255,255,0.02)', 
-                            borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.08)',
-                            borderTop: '3px solid #3b82f6',
-                            boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
-                            cursor: 'pointer', position: 'relative', overflow: 'hidden'
+                            display: 'flex', alignItems: 'center', gap: '1.5rem',
+                            padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.03)', 
+                            borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)',
+                            borderLeft: '4px solid #3b82f6',
+                            boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                            cursor: 'pointer'
                           }}
                         >
-                          {/* Inner glowing numbered badge */}
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.4)', color: '#60a5fa', fontSize: '1rem', fontWeight: 700, flexShrink: 0 }}>
-                            {index + 1}
+                          <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.75rem', borderRadius: '0.75rem' }}>
+                            <FolderOpen size={24} color="#60a5fa" />
                           </div>
-
                           <div style={{ flex: 1 }}>
-                            <h3 style={{ fontSize: '1.25rem', fontWeight: 600, margin: '0 0 0.35rem 0', color: '#fff' }}>{cat.name}</h3>
-                            <span style={{ fontSize: '0.8rem', color: '#6b7280', fontFamily: 'monospace' }}>ACCESS_NODE //</span>
-                          </div>
-
-                          <div style={{ opacity: 0.5 }}>
-                            <FolderOpen size={28} color="#60a5fa" />
+                            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.25rem 0', color: '#fff' }}>{cat.name}</h3>
+                            <span style={{ fontSize: '0.75rem', color: '#6b7280', fontFamily: 'monospace' }}>SELECT_PATH //</span>
                           </div>
                         </motion.div>
                       </Link>
                     </motion.div>
-                  ))}
-                </motion.div>
-              </div>
+                  </div>
+                ))}
+              </>
             ) : (
-              <div style={{ textAlign: 'center', padding: '4rem', color: '#6b7280', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '1rem', marginTop: '2rem' }}>
+              <motion.div variants={itemVariants} style={{ textAlign: 'center', padding: '4rem', color: '#6b7280', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '1rem', marginTop: '2rem' }}>
                 <FileText size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto' }} />
                 <p style={{ fontFamily: 'monospace' }}>No nodes available.</p>
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -267,7 +247,7 @@ export default function Home() {
                 <div style={{ width: '90px', height: '90px', borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', margin: '0 auto 1.5rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 800, color: '#fff', boxShadow: '0 0 30px rgba(59,130,246,0.4)', border: '3px solid rgba(255,255,255,0.1)' }}>
                   M
                 </div>
-                <h3 style={{ fontSize: '2.5rem', margin: '0 0 0.5rem 0', color: '#fff', fontFamily: '"WindSong", cursive', letterSpacing: '2px', fontWeight: 500 }}>Mrutunjaya Pradhan</h3>
+                <h3 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', color: '#fff', fontFamily: '"Caveat", cursive', letterSpacing: '1px' }}>Mrutunjaya Pradhan</h3>
                 <p style={{ color: '#9ca3af', margin: 0, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Curator</p>
               </div>
               
