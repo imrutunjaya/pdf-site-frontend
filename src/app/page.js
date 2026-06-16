@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FolderOpen, FileText, Info } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { FolderOpen, FileText, Info, X, Mail, Github, Globe } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -91,15 +92,29 @@ export default function Home() {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <img src="/logo.png" alt="" style={{ width: '36px', height: '36px', objectFit: 'contain' }} />
+              {/* Unique Animated Header Graphic */}
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
+                style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid rgba(59,130,246,0.5)', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', position: 'relative', flexShrink: 0 }}
+              >
+                <div style={{ position: 'absolute', width: '18px', height: '18px', background: '#3b82f6', borderRadius: '4px', transform: 'rotate(45deg)' }}></div>
+                <div style={{ position: 'absolute', width: '6px', height: '6px', background: '#fff', borderRadius: '50%' }}></div>
+              </motion.div>
               <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 300, margin: 0, letterSpacing: '-1px' }}>
                 <span style={{ fontWeight: 700 }}>Repository</span>.Book
               </h2>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <span style={{ fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', color: '#6b7280', fontStyle: 'italic' }}>By-Mrutunjaya</span>
-              <Info size={20} color="#9ca3af" />
-            </div>
+            
+            {/* Clickable Info Section */}
+            <button 
+              onClick={() => setIsAboutModalOpen(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
+              className="hover-bright"
+            >
+              <span style={{ fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', color: '#6b7280', fontStyle: 'italic', transition: 'color 0.2s' }}>By-Mrutunjaya</span>
+              <Info size={20} color="#9ca3af" style={{ transition: 'color 0.2s' }} />
+            </button>
           </motion.div>
 
           {/* Flowchart Layout */}
@@ -124,11 +139,15 @@ export default function Home() {
                 {categories.map((cat, index) => (
                   <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '800px' }}>
                     
-                    {/* SVG Flowchart Arrow */}
-                    <motion.div variants={itemVariants} style={{ height: '50px', display: 'flex', justifyContent: 'center' }}>
-                      <svg width="24" height="50" viewBox="0 0 24 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 0V48M12 48L6 42M12 48L18 42" stroke="rgba(59,130,246,0.6)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
+                    {/* Integrated Number and Arrow */}
+                    <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{ width: '2px', height: '20px', background: 'rgba(59,130,246,0.6)' }}></div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', border: '2px solid rgba(59,130,246,0.6)', color: '#fff', fontSize: '1rem', fontWeight: 700 }}>
+                        {index + 1}
+                      </div>
+                      <div style={{ width: '2px', height: '20px', background: 'rgba(59,130,246,0.6)', position: 'relative' }}>
+                        <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(59,130,246,0.6)' }}></div>
+                      </div>
                     </motion.div>
 
                     {/* Flowchart Node */}
@@ -147,9 +166,6 @@ export default function Home() {
                             cursor: 'pointer'
                           }}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '1rem', fontWeight: 700, flexShrink: 0 }}>
-                            {index + 1}
-                          </div>
                           <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.75rem', borderRadius: '0.75rem' }}>
                             <FolderOpen size={24} color="#60a5fa" />
                           </div>
@@ -173,6 +189,53 @@ export default function Home() {
         </div>
       </div>
 
+      {/* About Me Modal */}
+      <AnimatePresence>
+        {isAboutModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }}
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              style={{ background: 'rgba(15,15,15,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.5rem', padding: '2.5rem', width: '100%', maxWidth: '400px', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+            >
+              <button 
+                onClick={() => setIsAboutModalOpen(false)}
+                style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'none', border: 'none', color: '#6b7280', cursor: 'pointer' }}
+                className="hover-white"
+              >
+                <X size={24} />
+              </button>
+              
+              <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', margin: '0 auto 1.5rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2rem', fontWeight: 800, color: '#fff', boxShadow: '0 0 20px rgba(59,130,246,0.3)' }}>
+                  M
+                </div>
+                <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.5rem 0', color: '#fff' }}>Mrutunjaya Pradhan</h3>
+                <p style={{ color: '#9ca3af', margin: 0, fontSize: '0.875rem' }}>Curator of Repository.Book</p>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <a href="mailto:pradhanmrutunjaya73@gmail.com" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem', textDecoration: 'none', color: '#e5e7eb', transition: 'background 0.2s' }} className="hover-bg">
+                  <Mail size={20} color="#3b82f6" />
+                  <span style={{ fontSize: '0.875rem' }}>pradhanmrutunjaya73@gmail.com</span>
+                </a>
+                <a href="#" style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem', textDecoration: 'none', color: '#e5e7eb', transition: 'background 0.2s' }} className="hover-bg">
+                  <Github size={20} color="#fff" />
+                  <span style={{ fontSize: '0.875rem' }}>github.com/imrutunjaya</span>
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <style>{`
         body { margin: 0; background: #050505; }
         .skeleton { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
@@ -184,6 +247,10 @@ export default function Home() {
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        .hover-bright:hover span { color: #fff !important; }
+        .hover-bright:hover svg { color: #fff !important; }
+        .hover-white:hover { color: #fff !important; }
+        .hover-bg:hover { background: rgba(255,255,255,0.08) !important; }
       `}</style>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
-import { FileText, ArrowLeft, Loader2, AlertCircle, Eye, Download, FolderOpen } from 'lucide-react';
+import { FileText, ArrowLeft, Loader2, AlertCircle, Eye, Download, FolderOpen, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function CategoryDetailsPage({ params }) {
@@ -102,11 +102,11 @@ export default function CategoryDetailsPage({ params }) {
             <p style={{ color: '#6b7280', margin: 0 }}>Upload PDF modules to this folder in your repository.</p>
           </div>
         ) : (
-          <div style={{ position: 'relative', paddingLeft: 'clamp(1rem, 3vw, 2rem)' }}>
+          <div style={{ position: 'relative', paddingLeft: 'clamp(1.5rem, 4vw, 3rem)' }}>
             {/* Vertical Tree Branch Line */}
             <div style={{ position: 'absolute', top: '1.5rem', bottom: '2rem', left: '0', width: '2px', background: 'linear-gradient(to bottom, rgba(59,130,246,0.5), transparent)' }}></div>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', marginLeft: 'clamp(-1rem, -3vw, -2rem)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', marginLeft: 'clamp(-1.5rem, -4vw, -3rem)' }}>
               <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.3)', zIndex: 2 }}>
                 <FolderOpen size={24} color="#3b82f6" />
               </div>
@@ -123,15 +123,16 @@ export default function CategoryDetailsPage({ params }) {
                   key={pdf.path} 
                   style={{ position: 'relative', paddingLeft: 'clamp(1rem, 4vw, 2.5rem)', marginBottom: '1.5rem' }}
                 >
-                  {/* Horizontal Tree Branch Line */}
-                  <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 'clamp(-1rem, -3vw, -2rem)', width: 'clamp(2rem, 7vw, 4.5rem)', height: '2px', background: 'rgba(59,130,246,0.3)' }}></div>
+                  {/* Horizontal Tree Branch Line & Number */}
+                  <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 'clamp(-1.5rem, -4vw, -3rem)', width: 'clamp(2.5rem, 8vw, 5.5rem)', height: '2px', background: 'rgba(59,130,246,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', background: '#050505', border: '2px solid rgba(59,130,246,0.6)', color: '#fff', fontSize: '0.75rem', fontWeight: 700, zIndex: 3 }}>
+                      {index + 1}
+                    </div>
+                  </div>
                   
                   <div className="hover-bg" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s', position: 'relative', zIndex: 2 }}>
                     
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 200px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', color: '#fff', fontSize: '0.875rem', fontWeight: 700, flexShrink: 0 }}>
-                        {index + 1}
-                      </div>
                       <FileText size={24} color="#ef4444" style={{ flexShrink: 0 }} />
                       <span style={{ fontSize: '1.125rem', fontWeight: 500, color: '#e5e7eb', wordBreak: 'break-word', lineHeight: 1.4 }}>{pdf.name.replace('.pdf', '')}</span>
                     </div>
@@ -142,6 +143,10 @@ export default function CategoryDetailsPage({ params }) {
                       </span>
                       
                       <div style={{ display: 'flex', gap: '0.5rem', width: '100%', justifyContent: 'flex-end' }}>
+                        {/* Report Button */}
+                        <a href={`mailto:pradhanmrutunjaya73@gmail.com?subject=Broken PDF Report: ${encodeURIComponent(pdf.name)}`} title="Report Broken PDF" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-red-bg">
+                          <AlertTriangle size={18} />
+                        </a>
                         <a href={pdfUrl} download={pdf.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-white-bg">
                           <Download size={18} />
                         </a>
@@ -164,6 +169,7 @@ export default function CategoryDetailsPage({ params }) {
         .hover-bg:hover { background: rgba(255,255,255,0.05) !important; }
         .hover-white-bg:hover { background: rgba(255,255,255,0.1) !important; }
         .hover-primary-bg:hover { background: #2563eb !important; }
+        .hover-red-bg:hover { background: rgba(239,68,68,0.2) !important; }
         
         /* Mobile specific adjustments inside style block for layout safety */
         @media (max-width: 600px) {
