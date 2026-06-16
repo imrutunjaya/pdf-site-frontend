@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { FolderOpen, ArrowRight, Sparkles, Database, FileText, Lock } from 'lucide-react';
+import { FolderOpen, ArrowRight, Sparkles, Database, FileText, Lock, Info } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 export default function Home() {
@@ -70,7 +70,7 @@ export default function Home() {
       </header>
 
       {/* --- CINEMATIC ZOOM SECTION --- */}
-      <div ref={containerRef} style={{ height: '200vh', position: 'relative' }}>
+      <div ref={containerRef} style={{ height: '120vh', position: 'relative' }}>
         
         {/* Sticky wrapper */}
         <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -144,12 +144,16 @@ export default function Home() {
 
       {/* --- NEW PAGE: TREE VIEW --- */}
       {/* We use framer-motion here to pull the tree view up slightly so it transitions perfectly from the portal */}
-      <motion.section style={{ opacity: treeOpacity, y: treeY, minHeight: '100vh', position: 'relative', zIndex: 30, background: 'var(--background)', padding: '4rem 2rem 8rem 2rem', marginTop: '-20vh' }}>
-        <div className="container" style={{ maxWidth: '900px', margin: '0 auto' }}>
+      <motion.section style={{ opacity: treeOpacity, y: treeY, minHeight: '100vh', position: 'relative', zIndex: 30, background: 'var(--background)', padding: '2rem 1rem 8rem 1rem', marginTop: 0 }}>
+        <div className="container" style={{ maxWidth: '100%', margin: '0 auto', width: '100%' }}>
           
-          <div className="glass-panel" style={{ padding: '3rem', borderRadius: '1.5rem', background: 'rgba(10,10,10,0.8)', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 -20px 40px rgba(0,0,0,0.5)' }}>
-            <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '2rem', letterSpacing: '-0.02em', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
-              Repository File System
+          <div className="glass-panel" style={{ padding: '3rem', borderRadius: '1.5rem', background: 'rgba(10,10,10,0.8)', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 -20px 40px rgba(0,0,0,0.5)', width: '100%' }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', fontSize: '2.5rem', fontWeight: 800, marginBottom: '2rem', letterSpacing: '-0.02em', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+              Repository.Book
+              <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <span style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--muted-foreground)', fontStyle: 'italic', letterSpacing: '0.05em' }}>By-Mrutunjaya</span>
+                <Info size={28} color="var(--primary)" style={{ opacity: 0.8 }} />
+              </div>
             </h2>
 
             <div className="tree-container" style={{ paddingLeft: '1rem', paddingTop: '1rem' }}>
@@ -178,11 +182,11 @@ export default function Home() {
                       <div style={{ position: 'absolute', top: '24px', left: '-2.5rem', width: '2.5rem', height: '2px', background: 'rgba(255,255,255,0.1)' }}></div>
                       
                       <Link href={`/categories/${encodeURIComponent(cat.name)}`}>
-                        <div className="glass hover-card" style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.5rem', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.03)' }}>
+                        <motion.div whileHover={{ scale: 1.02, x: 10 }} transition={{ type: 'spring', stiffness: 300 }} className="glass hover-card" style={{ display: 'inline-flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.5rem', borderRadius: '0.75rem', background: 'rgba(255,255,255,0.03)' }}>
                            <FolderOpen size={24} color="var(--primary)" />
                            <span style={{ fontSize: '1.125rem', fontWeight: 500, fontFamily: 'monospace' }}>{cat.name}</span>
                            <ArrowRight size={16} color="var(--muted-foreground)" style={{ marginLeft: '1rem' }} />
-                        </div>
+                        </motion.div>
                       </Link>
                     </div>
                   ))

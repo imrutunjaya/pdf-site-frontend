@@ -128,7 +128,6 @@ export default function PdfReaderPage({ searchParams }) {
   const fileName = path.split('/').pop().replace('.pdf', '');
 
   const isSinglePageMode = windowWidth < 800;
-  const renderScale = isSinglePageMode ? scale : (windowWidth < 1000 ? Math.min(scale, windowWidth / 1200) : scale);
 
   return (
     <div 
@@ -203,7 +202,7 @@ export default function PdfReaderPage({ searchParams }) {
       )}
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, position: 'relative', overflow: 'hidden', padding: isFullscreen || isSinglePageMode ? '0' : '3rem 0', background: isFullscreen ? '#000' : 'transparent' }}>
+      <main style={{ flex: 1, position: 'relative', overflow: 'hidden', padding: '0', background: isFullscreen ? '#000' : 'transparent', display: 'flex', flexDirection: 'column' }}>
         
         {/* Fullscreen Exit Button */}
         {isFullscreen && (
@@ -299,8 +298,9 @@ export default function PdfReaderPage({ searchParams }) {
                 <div className={"book-page " + (isSinglePageMode ? 'mobile-page' : '')} onClick={() => isSinglePageMode && changeSinglePage(1)}>
                   <Page 
                     pageNumber={pageNumber} 
-                    scale={renderScale} 
+                    scale={scale} 
                     width={isSinglePageMode ? windowWidth : undefined}
+                    height={isFullscreen && !isSinglePageMode ? window.innerHeight : undefined}
                     renderTextLayer={true}
                     renderAnnotationLayer={true}
                     devicePixelRatio={typeof window !== 'undefined' ? Math.max(window.devicePixelRatio || 1, 2) : 2}
@@ -312,7 +312,8 @@ export default function PdfReaderPage({ searchParams }) {
                   <div className="book-page">
                     <Page 
                       pageNumber={pageNumber + 1} 
-                      scale={renderScale} 
+                      scale={scale} 
+                      height={isFullscreen && !isSinglePageMode ? window.innerHeight : undefined}
                       renderTextLayer={true}
                       renderAnnotationLayer={true}
                       devicePixelRatio={typeof window !== 'undefined' ? Math.max(window.devicePixelRatio || 1, 2) : 2}
