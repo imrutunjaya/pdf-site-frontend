@@ -3,6 +3,7 @@
 import { useEffect, useState, use, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { motion, AnimatePresence } from 'framer-motion';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 import { ArrowLeft, Loader2, Download, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Sun, Search, BookOpen, Music, Maximize, X, FileText, MoreVertical } from 'lucide-react';
@@ -20,6 +21,7 @@ export default function PdfReaderPage({ searchParams }) {
   const [scale, setScale] = useState(1.0);
   const [windowWidth, setWindowWidth] = useState(1200);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [direction, setDirection] = useState(0);
   
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showFsClose, setShowFsClose] = useState(true);
@@ -95,6 +97,7 @@ export default function PdfReaderPage({ searchParams }) {
   };
 
   const changePage = (offset) => {
+    setDirection(offset > 0 ? 1 : -1);
     setPageNumber(prev => {
       let next = prev + (offset * 2);
       if (next < 1) return 1;
@@ -107,6 +110,7 @@ export default function PdfReaderPage({ searchParams }) {
 
   // Dedicated single page advance for mobile/fullscreen clicks
   const changeSinglePage = (offset) => {
+    setDirection(offset > 0 ? 1 : -1);
     setPageNumber(prev => {
       let next = prev + offset;
       if (next < 1) return 1;
@@ -128,6 +132,32 @@ export default function PdfReaderPage({ searchParams }) {
   const fileName = path.split('/').pop().replace('.pdf', '');
 
   const isSinglePageMode = windowWidth < 800;
+
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
+
+  const pageVariants = {
+    enter: (direction) => ({
+      x: direction > 0 ? '100%' : '-100%',
+      opacity: 0,
+      rotateY: direction > 0 ? 45 : -45,
+      scale: 0.9,
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1,
+      rotateY: 0,
+      scale: 1,
+    },
+    exit: (direction) => ({
+      zIndex: 0,
+      x: direction < 0 ? '100%' : '-100%',
+      opacity: 0,
+      rotateY: direction < 0 ? 45 : -45,
+      scale: 0.9,
+    })
+  };
 
   return (
     <div 
@@ -285,41 +315,64 @@ export default function PdfReaderPage({ searchParams }) {
                 </div>
               }
             >
-              <div 
-                style={{ 
-                  display: 'flex', 
-                  gap: isSinglePageMode ? '0' : '2px', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  width: isSinglePageMode ? '100%' : 'auto'
-                }}
-              >
-                {/* Left Page (or Single Page) */}
-                <div className={"book-page " + (isSinglePageMode ? 'mobile-page' : '')} onClick={() => isSinglePageMode && changeSinglePage(1)}>
-                  <Page 
-                    pageNumber={pageNumber} 
-                    scale={scale} 
-                    width={isSinglePageMode ? windowWidth : undefined}
-                    height={isFullscreen && !isSinglePageMode ? window.innerHeight : undefined}
-                    renderTextLayer={true}
-                    renderAnnotationLayer={true}
-                    devicePixelRatio={typeof window !== 'undefined' ? Math.max(window.devicePixelRatio || 1, 2) : 2}
-                  />
-                </div>
-                
-                {/* Right Page (only if not single page mode and within bounds) */}
-                {!isSinglePageMode && pageNumber + 1 <= numPages && (
-                  <div className="book-page">
-                    <Page 
-                      pageNumber={pageNumber + 1} 
-                      scale={scale} 
-                      height={isFullscreen && !isSinglePageMode ? window.innerHeight : undefined}
-                      renderTextLayer={true}
-                      renderAnnotationLayer={true}
-                      devicePixelRatio={typeof window !== 'undefined' ? Math.max(window.devicePixelRatio || 1, 2) : 2}
-                    />
-                  </div>
-                )}
+              <div style={{ perspective: '1500px', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <AnimatePresence initial={false} custom={direction} mode="popLayout">
+                  <motion.div 
+                    key={pageNumber}
+                    custom={direction}
+                    variants={pageVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={(e, { offset, velocity }) => {
+                      const swipe = swipePower(offset.x, velocity.x);
+                      if (swipe < -swipeConfidenceThreshold) {
+                        changePage(1);
+                      } else if (swipe > swipeConfidenceThreshold) {
+                        changePage(-1);
+                      }
+                    }}
+                    style={{ 
+                      display: 'flex', 
+                      gap: isSinglePageMode ? '0' : '2px', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      width: isSinglePageMode ? '100%' : 'auto',
+                      transformStyle: 'preserve-3d'
+                    }}
+                  >
+                    {/* Left Page (or Single Page) */}
+                    <div className={"book-page " + (isSinglePageMode ? 'mobile-page' : '')} onClick={() => isSinglePageMode && changeSinglePage(1)}>
+                      <Page 
+                        pageNumber={pageNumber} 
+                        scale={scale} 
+                        width={isSinglePageMode ? windowWidth : undefined}
+                        height={isFullscreen && !isSinglePageMode ? window.innerHeight : undefined}
+                        renderTextLayer={true}
+                        renderAnnotationLayer={true}
+                        devicePixelRatio={typeof window !== 'undefined' ? Math.max(window.devicePixelRatio || 1, 2) : 2}
+                      />
+                    </div>
+                    
+                    {/* Right Page (only if not single page mode and within bounds) */}
+                    {!isSinglePageMode && pageNumber + 1 <= numPages && (
+                      <div className="book-page">
+                        <Page 
+                          pageNumber={pageNumber + 1} 
+                          scale={scale} 
+                          height={isFullscreen && !isSinglePageMode ? window.innerHeight : undefined}
+                          renderTextLayer={true}
+                          renderAnnotationLayer={true}
+                          devicePixelRatio={typeof window !== 'undefined' ? Math.max(window.devicePixelRatio || 1, 2) : 2}
+                        />
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </Document>
           </div>
