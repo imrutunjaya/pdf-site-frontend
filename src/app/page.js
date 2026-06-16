@@ -61,29 +61,6 @@ export default function Home() {
       {/* Main Dashboard Layout */}
       <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', height: '100vh', padding: '2rem' }}>
         
-        {/* Top Branding / Navbar */}
-        <motion.header 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem', padding: '1rem 2rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '1rem', backdropFilter: 'blur(10px)' }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.2)' }}>
-              <Lock size={24} color="#3b82f6" />
-            </div>
-            <div>
-              <h1 style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase', background: 'linear-gradient(to right, #60a5fa, #a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>CITEnd</h1>
-              <span style={{ fontSize: '0.75rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '1px' }}>Secure Terminal</span>
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: '#10b981' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }}></span>
-              System Online
-            </span>
-          </div>
-        </motion.header>
 
         {/* Central Content Area */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', maxWidth: '1200px', width: '100%', margin: '0 auto', overflow: 'hidden' }}>
