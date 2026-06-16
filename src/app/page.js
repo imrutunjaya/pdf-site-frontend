@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { FolderOpen, FileText, Info, X, Mail } from 'lucide-react';
+import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
@@ -10,6 +10,35 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  // viewMode options: 'flowchart-center', 'flowchart-left', 'list', 'grid'
+  const [viewMode, setViewMode] = useState('flowchart-center');
+  const settingsRef = useRef(null);
+
+  // Handle clicking outside the settings dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
+        setIsSettingsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Load from local storage
+  useEffect(() => {
+    const savedMode = localStorage.getItem('repo-view-mode');
+    if (savedMode) setViewMode(savedMode);
+  }, []);
+
+  // Save to local storage when changed
+  const handleViewChange = (mode) => {
+    setViewMode(mode);
+    localStorage.setItem('repo-view-mode', mode);
+    setIsSettingsOpen(false);
+  };
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -36,16 +65,11 @@ export default function Home() {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
+    show: { opacity: 1, transition: { staggerChildren: 0.15 } }
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 20 } }
   };
 
@@ -54,7 +78,7 @@ export default function Home() {
       
       {/* Google Fonts for Handwritten Signature */}
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap');
       </style>
 
       {/* Holographic Grid Background */}
@@ -83,10 +107,10 @@ export default function Home() {
       }}></div>
 
       {/* Main Dashboard Layout */}
-      <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', height: '100vh', padding: 'clamp(1rem, 3vw, 2rem)' }}>
+      <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', height: '100vh', padding: '1rem 0' }}>
         
         {/* Central Content Area */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', margin: '0 auto', overflow: 'hidden' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', margin: '0 auto', overflow: 'hidden', padding: '0 1rem' }}>
           
           {/* Header */}
           <motion.div 
@@ -98,35 +122,26 @@ export default function Home() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               
-              {/* Complex Animated SVG Graphic */}
-              <div style={{ position: 'relative', width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <motion.svg width="45" height="45" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-                  style={{ position: 'absolute' }}
-                >
-                  <circle cx="25" cy="25" r="23" stroke="url(#paint0_linear)" strokeWidth="2" strokeDasharray="10 10" />
-                  <defs>
-                    <linearGradient id="paint0_linear" x1="0" y1="0" x2="50" y2="50" gradientUnits="userSpaceOnUse">
-                      <stop stopColor="#3b82f6" />
-                      <stop offset="1" stopColor="transparent" />
-                    </linearGradient>
-                  </defs>
-                </motion.svg>
-                
-                <motion.svg width="30" height="30" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg"
-                  animate={{ rotate: -360 }}
-                  transition={{ duration: 15, repeat: Infinity, ease: 'linear' }}
-                  style={{ position: 'absolute' }}
-                >
-                  <rect x="2" y="2" width="30" height="30" stroke="#60a5fa" strokeWidth="2" rx="4" />
-                </motion.svg>
-                
-                <motion.div 
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{ width: '10px', height: '10px', background: '#3b82f6', borderRadius: '50%', boxShadow: '0 0 15px #3b82f6' }}
-                />
+              {/* Realistic CSS Earth and Moon */}
+              <div style={{ position: 'relative', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{
+                  width: '45px', height: '45px', borderRadius: '50%',
+                  backgroundImage: 'url(https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Land_ocean_ice_2048.jpg/512px-Land_ocean_ice_2048.jpg)',
+                  backgroundSize: '200% 100%',
+                  boxShadow: 'inset -8px -8px 15px rgba(0,0,0,0.9), inset 2px 2px 5px rgba(255,255,255,0.3), 0 0 20px rgba(59,130,246,0.3)',
+                  animation: 'spin-earth 20s linear infinite',
+                  position: 'relative', zIndex: 2
+                }}></div>
+                <div style={{
+                  width: '12px', height: '12px', borderRadius: '50%',
+                  background: '#ffffff',
+                  boxShadow: '0 0 10px rgba(255,255,255,0.8), inset -3px -3px 4px rgba(0,0,0,0.3)',
+                  position: 'absolute',
+                  animation: 'orbit-moon 10s linear infinite',
+                  left: '50%', top: '50%',
+                  marginTop: '-6px', marginLeft: '-6px',
+                  zIndex: 1
+                }}></div>
               </div>
 
               <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 300, margin: 0, letterSpacing: '-1px' }}>
@@ -134,54 +149,116 @@ export default function Home() {
               </h2>
             </div>
             
-            {/* Clickable Info Section */}
-            <button 
-              onClick={() => setIsAboutModalOpen(true)}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
-              className="hover-bright"
-            >
-              <span style={{ fontSize: 'clamp(1.2rem, 3vw, 1.75rem)', color: '#9ca3af', fontFamily: '"Caveat", cursive', transition: 'color 0.2s', paddingRight: '0.5rem' }}>
-                By-Mrutunjaya
-              </span>
-              <Info size={24} color="#3b82f6" style={{ transition: 'all 0.2s', opacity: 0.8 }} />
-            </button>
+            {/* Header Right Actions */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              
+              {/* Settings Dropdown */}
+              <div style={{ position: 'relative' }} ref={settingsRef}>
+                <button 
+                  onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', cursor: 'pointer', padding: '0.6rem', borderRadius: '50%', transition: 'all 0.2s' }}
+                  className="hover-white hover-bg"
+                >
+                  <Settings size={20} />
+                </button>
+                
+                <AnimatePresence>
+                  {isSettingsOpen && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      style={{ position: 'absolute', right: 0, top: '120%', width: '220px', background: 'rgba(15,15,15,0.95)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1rem', padding: '0.5rem', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', zIndex: 100 }}
+                    >
+                      <h4 style={{ margin: '0.5rem 0.75rem', fontSize: '0.75rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '1px' }}>View Options</h4>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        
+                        <button onClick={() => handleViewChange('flowchart-center')} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', width: '100%', background: viewMode === 'flowchart-center' ? 'rgba(59,130,246,0.1)' : 'transparent', border: 'none', color: viewMode === 'flowchart-center' ? '#fff' : '#9ca3af', borderRadius: '0.5rem', cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} className="hover-bg">
+                          <AlignCenter size={18} color={viewMode === 'flowchart-center' ? '#60a5fa' : 'currentColor'} />
+                          <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Flowchart (Center)</span>
+                        </button>
+                        
+                        <button onClick={() => handleViewChange('flowchart-left')} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', width: '100%', background: viewMode === 'flowchart-left' ? 'rgba(59,130,246,0.1)' : 'transparent', border: 'none', color: viewMode === 'flowchart-left' ? '#fff' : '#9ca3af', borderRadius: '0.5rem', cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} className="hover-bg">
+                          <AlignLeft size={18} color={viewMode === 'flowchart-left' ? '#60a5fa' : 'currentColor'} />
+                          <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Flowchart (Left)</span>
+                        </button>
+                        
+                        <button onClick={() => handleViewChange('list')} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', width: '100%', background: viewMode === 'list' ? 'rgba(59,130,246,0.1)' : 'transparent', border: 'none', color: viewMode === 'list' ? '#fff' : '#9ca3af', borderRadius: '0.5rem', cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} className="hover-bg">
+                          <LayoutList size={18} color={viewMode === 'list' ? '#60a5fa' : 'currentColor'} />
+                          <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>List View</span>
+                        </button>
+                        
+                        <button onClick={() => handleViewChange('grid')} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', width: '100%', background: viewMode === 'grid' ? 'rgba(59,130,246,0.1)' : 'transparent', border: 'none', color: viewMode === 'grid' ? '#fff' : '#9ca3af', borderRadius: '0.5rem', cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} className="hover-bg">
+                          <Grid size={18} color={viewMode === 'grid' ? '#60a5fa' : 'currentColor'} />
+                          <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Grid View</span>
+                        </button>
+
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Clickable Info Section */}
+              <button 
+                onClick={() => setIsAboutModalOpen(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
+                className="hover-bright"
+              >
+                <span style={{ fontSize: 'clamp(1.2rem, 3vw, 1.75rem)', color: '#9ca3af', fontFamily: '"Caveat", cursive', fontWeight: 400, transition: 'color 0.2s', paddingRight: '0.5rem' }}>
+                  By-Mrutunjaya
+                </span>
+                <Info size={24} color="#3b82f6" style={{ transition: 'all 0.2s', opacity: 0.8 }} />
+              </button>
+            </div>
           </motion.div>
 
-          {/* Flowchart Layout (Linear Vertical) */}
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            style={{ 
-              display: 'flex', flexDirection: 'column', alignItems: 'center', 
-              flex: 1, overflowY: 'auto', padding: '1rem 0 4rem 0', width: '100%' 
-            }}
-            className="custom-scrollbar"
-          >
+          {/* Dynamic Content Layout */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 0 4rem 0', width: '100%' }} className="custom-scrollbar">
             {loading ? (
               <div className="skeleton" style={{ height: '80px', width: '100%', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem' }}></div>
             ) : categories.length > 0 ? (
-              <>
-                <motion.div variants={itemVariants} style={{ padding: '0.75rem 2rem', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#9ca3af', fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 600 }}>
-                  Repobase
-                </motion.div>
+              
+              <motion.div 
+                variants={containerVariants}
+                initial="hidden"
+                animate="show"
+                style={{
+                  display: viewMode === 'grid' ? 'grid' : 'flex',
+                  flexDirection: viewMode === 'grid' ? 'row' : 'column',
+                  gridTemplateColumns: viewMode === 'grid' ? 'repeat(auto-fill, minmax(300px, 1fr))' : 'none',
+                  alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
+                  gap: viewMode === 'grid' ? '1.5rem' : '0',
+                  width: '100%'
+                }}
+              >
+                
+                {/* Repobase Node (Only visible in Flowcharts) */}
+                {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
+                  <motion.div variants={itemVariants} style={{ padding: '0.75rem 2rem', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#9ca3af', fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>
+                    Repobase
+                  </motion.div>
+                )}
 
                 {categories.map((cat, index) => (
-                  <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                  <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', width: '100%' }}>
                     
-                    {/* Integrated Number and Arrow */}
-                    <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)' }}></div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '1rem', fontWeight: 700 }}>
-                        {index + 1}
-                      </div>
-                      <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)', position: 'relative' }}>
-                        <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(255,255,255,0.2)' }}></div>
-                      </div>
-                    </motion.div>
+                    {/* Integrated Number and Arrow (Only in Flowcharts) */}
+                    {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
+                      <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: viewMode === 'flowchart-left' ? '3rem' : '0' }}>
+                        <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)' }}></div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '1rem', fontWeight: 700 }}>
+                          {index + 1}
+                        </div>
+                        <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)', position: 'relative' }}>
+                          <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(255,255,255,0.2)' }}></div>
+                        </div>
+                      </motion.div>
+                    )}
 
-                    {/* Flowchart Node */}
-                    <motion.div variants={itemVariants} style={{ width: '100%' }}>
+                    {/* Node Card */}
+                    <motion.div variants={itemVariants} style={{ width: '100%', marginBottom: (viewMode === 'list' || viewMode === 'grid') ? '1rem' : '0' }}>
                       <Link href={`/categories/${encodeURIComponent(cat.name)}`} style={{ textDecoration: 'none' }}>
                         <motion.div 
                           whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
@@ -196,6 +273,11 @@ export default function Home() {
                             cursor: 'pointer'
                           }}
                         >
+                          {(viewMode === 'list' || viewMode === 'grid') && (
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', color: '#60a5fa', fontSize: '0.8rem', fontWeight: 700 }}>
+                              {index + 1}
+                            </div>
+                          )}
                           <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.75rem', borderRadius: '0.75rem' }}>
                             <FolderOpen size={24} color="#60a5fa" />
                           </div>
@@ -208,14 +290,15 @@ export default function Home() {
                     </motion.div>
                   </div>
                 ))}
-              </>
+              </motion.div>
+
             ) : (
               <motion.div variants={itemVariants} style={{ textAlign: 'center', padding: '4rem', color: '#6b7280', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '1rem', marginTop: '2rem' }}>
                 <FileText size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto' }} />
                 <p style={{ fontFamily: 'monospace' }}>No nodes available.</p>
               </motion.div>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
 
@@ -268,6 +351,16 @@ export default function Home() {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: .3; }
+        }
+        @keyframes spin-earth {
+          from { background-position: 0 0; }
+          to { background-position: 200% 0; }
+        }
+        @keyframes orbit-moon {
+          from { transform: rotate(0deg) translateX(45px) rotate(0deg); z-index: 3; }
+          49.9% { z-index: 3; }
+          50% { transform: rotate(180deg) translateX(45px) rotate(-180deg); z-index: 1; }
+          100% { transform: rotate(360deg) translateX(45px) rotate(-360deg); z-index: 1; }
         }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
