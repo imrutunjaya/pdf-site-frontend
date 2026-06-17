@@ -5,6 +5,63 @@ import Link from 'next/link';
 import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const MatrixRain = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    
+    const setSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    setSize();
+    
+    const characters = '01';
+    const fontSize = 16;
+    const columns = Math.ceil(canvas.width / fontSize);
+    
+    const drops = [];
+    for (let x = 0; x < columns; x++) {
+      drops[x] = Math.random() * -100;
+    }
+    
+    const draw = () => {
+      ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'; 
+      ctx.font = fontSize + 'px monospace';
+      
+      for (let i = 0; i < drops.length; i++) {
+        const text = characters.charAt(Math.floor(Math.random() * characters.length));
+        const y = drops[i] * fontSize;
+        
+        if (y > 0) {
+          ctx.fillText(text, i * fontSize, y);
+        }
+        
+        if (y > canvas.height && Math.random() > 0.98) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    };
+    
+    const interval = setInterval(draw, 50);
+    window.addEventListener('resize', setSize);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', setSize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />;
+};
+
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,10 +116,12 @@ export default function Home() {
       const res = await fetch('/api/categories');
       const data = await res.json();
       if (res.ok) setCategories(data.categories || []);
+      // Guarantee at least 2.5 seconds of Matrix goodness!
+      await new Promise(resolve => setTimeout(resolve, 2500));
     } catch (err) {
       console.error(err);
     } finally {
-      setTimeout(() => setIsSyncing(false), 600);
+      setIsSyncing(false);
     }
   };
 
@@ -452,6 +511,32 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Matrix Syncing Overlay */}
+      <AnimatePresence>
+        {isSyncing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#050505', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <MatrixRain />
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ delay: 0.2, type: 'spring' }}
+              style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', background: 'rgba(5,5,5,0.7)', padding: '3rem 5rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', boxShadow: '0 0 50px rgba(255,255,255,0.1)' }}
+            >
+              <RefreshCw size={48} color="#fff" className="spin-animation" />
+              <h2 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 300, letterSpacing: '8px', color: '#fff', textTransform: 'uppercase' }}>
+                Synchronizing
+              </h2>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* About Me Modal */}
       <AnimatePresence>
         {isAboutModalOpen && (
@@ -507,6 +592,8 @@ export default function Home() {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spin-animation { animation: spin 2s linear infinite; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
