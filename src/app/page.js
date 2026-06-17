@@ -62,6 +62,51 @@ const MatrixRain = () => {
   return <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />;
 };
 
+const IosSpinner = ({ size = 48, color = '#fff' }) => {
+  return (
+    <div style={{ position: 'relative', width: size, height: size, display: 'inline-block' }}>
+      {[...Array(12)].map((_, i) => (
+        <div 
+          key={i} 
+          style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: `${size/2 - 2}px`, 
+            width: '4px', 
+            height: `${size/4}px`, 
+            background: color, 
+            borderRadius: '2px',
+            transformOrigin: `2px ${size/2}px`,
+            transform: `rotate(${i * 30}deg)`,
+            opacity: 1,
+            animation: `ios-spin 1.2s linear infinite`,
+            animationDelay: `${(i - 12) * 0.1}s`
+          }} 
+        />
+      ))}
+    </div>
+  );
+};
+
+const WaveText = ({ text }) => {
+  return (
+    <h2 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 300, letterSpacing: '8px', color: '#fff', textTransform: 'uppercase', display: 'flex', justifyContent: 'center' }}>
+      {text.split('').map((char, index) => (
+        <span 
+          key={index} 
+          style={{ 
+            display: 'inline-block',
+            animation: 'wave 1.5s ease-in-out infinite',
+            animationDelay: `${index * 0.05}s`
+          }}
+        >
+          {char === ' ' ? '\u00A0' : char}
+        </span>
+      ))}
+    </h2>
+  );
+};
+
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -280,8 +325,8 @@ export default function Home() {
               {/* Sync Button */}
               <button 
                 onClick={handleSync}
-                style={{ display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', cursor: 'pointer', padding: '0.6rem', borderRadius: '50%', transition: 'all 0.2s' }}
-                className="hover-white hover-bg"
+                style={{ display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', padding: '0.5rem', transition: 'all 0.2s' }}
+                className="hover-white"
               >
                 <motion.div animate={{ rotate: isSyncing ? 360 : 0 }} transition={{ duration: 1, ease: "linear", repeat: isSyncing ? Infinity : 0 }}>
                   <RefreshCw size={20} />
@@ -526,12 +571,10 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ delay: 0.2, type: 'spring' }}
-              style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', background: 'rgba(5,5,5,0.7)', padding: '3rem 5rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', boxShadow: '0 0 50px rgba(255,255,255,0.1)' }}
+              style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', background: 'rgba(5,5,5,0.7)', padding: '3rem 5rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', boxShadow: '0 0 50px rgba(255,255,255,0.1)' }}
             >
-              <RefreshCw size={48} color="#fff" className="spin-animation" />
-              <h2 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 300, letterSpacing: '8px', color: '#fff', textTransform: 'uppercase' }}>
-                Synchronizing
-              </h2>
+              <IosSpinner size={48} />
+              <WaveText text="Synchronizing" />
             </motion.div>
           </motion.div>
         )}
@@ -594,6 +637,14 @@ export default function Home() {
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .spin-animation { animation: spin 2s linear infinite; }
+        @keyframes ios-spin {
+          0% { opacity: 1; }
+          100% { opacity: 0.15; }
+        }
+        @keyframes wave {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
