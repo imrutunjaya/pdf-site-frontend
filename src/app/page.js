@@ -39,6 +39,30 @@ const IosSpinner = ({ size = 48, color = '#fff', isSpinning = true }) => {
 
 
 
+const SolarSystem = ({ innerRef, style, className }) => (
+  <div ref={innerRef} className={`solar-system ${className || ''}`} style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
+    {/* Sun */}
+    <div style={{
+      width: '26px', height: '26px', borderRadius: '50%',
+      background: 'radial-gradient(circle at 30% 30%, #fef08a, #f59e0b)',
+      boxShadow: '0 0 20px rgba(245, 158, 11, 0.4), inset -4px -4px 8px rgba(217, 119, 6, 0.8)',
+      position: 'relative', zIndex: 10
+    }}></div>
+    {/* Orbit 1 */}
+    <div style={{ position: 'absolute', width: '45px', height: '45px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 4s linear infinite' }}>
+      <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: '#9ca3af', boxShadow: '0 0 4px rgba(156,163,175,0.8)' }}></div>
+    </div>
+    {/* Orbit 2 */}
+    <div style={{ position: 'absolute', width: '65px', height: '65px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 8s linear infinite' }}>
+      <div style={{ position: 'absolute', top: '-4px', left: '50%', marginLeft: '-4px', width: '8px', height: '8px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8)', boxShadow: '0 0 6px rgba(59,130,246,0.6)' }}></div>
+    </div>
+    {/* Orbit 3 */}
+    <div style={{ position: 'absolute', width: '85px', height: '85px', borderRadius: '50%', border: '1px dashed rgba(255,255,255,0.05)', animation: 'spin-orbit 14s linear infinite' }}>
+      <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #fca5a5, #b91c1c)', boxShadow: '0 0 6px rgba(239,68,68,0.6)' }}></div>
+    </div>
+  </div>
+);
+
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -107,9 +131,15 @@ export default function Home() {
       const data = await res.json();
       if (res.ok) setCategories(data.categories || []);
       
+      // Wait for fetch, then transition to stage 2 (Center Solar System)
       await new Promise(resolve => setTimeout(resolve, 1500));
       setSyncStage(2);
       
+      // Wait to showcase the center Solar System
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setSyncStage(3);
+      
+      // Wait for flight animation to finish
       await new Promise(resolve => setTimeout(resolve, 800));
       setSyncStage(0);
     } catch (err) {
@@ -214,30 +244,7 @@ export default function Home() {
             <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                 {/* CSS Solar System */}
-                <div ref={solarSystemRef} className="solar-system" style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 0.5rem' }}>
-                  {/* Sun */}
-                  <div style={{
-                    width: '26px', height: '26px', borderRadius: '50%',
-                    background: 'radial-gradient(circle at 30% 30%, #fef08a, #f59e0b)',
-                    boxShadow: '0 0 20px rgba(245, 158, 11, 0.4), inset -4px -4px 8px rgba(217, 119, 6, 0.8)',
-                    position: 'relative', zIndex: 10
-                  }}></div>
-                  
-                  {/* Orbit 1 */}
-                  <div style={{ position: 'absolute', width: '45px', height: '45px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 4s linear infinite' }}>
-                    <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: '#9ca3af', boxShadow: '0 0 4px rgba(156,163,175,0.8)' }}></div>
-                  </div>
-
-                  {/* Orbit 2 */}
-                  <div style={{ position: 'absolute', width: '65px', height: '65px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 8s linear infinite' }}>
-                    <div style={{ position: 'absolute', top: '-4px', left: '50%', marginLeft: '-4px', width: '8px', height: '8px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8)', boxShadow: '0 0 6px rgba(59,130,246,0.6)' }}></div>
-                  </div>
-                  
-                  {/* Orbit 3 */}
-                  <div style={{ position: 'absolute', width: '85px', height: '85px', borderRadius: '50%', border: '1px dashed rgba(255,255,255,0.05)', animation: 'spin-orbit 14s linear infinite' }}>
-                    <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #fca5a5, #b91c1c)', boxShadow: '0 0 6px rgba(239,68,68,0.6)' }}></div>
-                  </div>
-                </div>
+                <SolarSystem innerRef={solarSystemRef} style={{ margin: '0 0.5rem', opacity: syncStage > 0 ? 0 : 1, transition: 'opacity 0.2s' }} />
 
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap' }}>
@@ -506,26 +513,46 @@ export default function Home() {
         {syncStage > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: syncStage === 1 ? 1 : 0 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(5,5,5,0.7)', backdropFilter: 'blur(8px)' }}
+            style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(5,5,5,0.8)', backdropFilter: 'blur(8px)' }}
           />
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {syncStage > 0 && (
+      <AnimatePresence mode="wait">
+        {syncStage === 1 && (
           <motion.div
+            key="spinner"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ type: 'spring', duration: 0.5 }}
+            style={{ 
+              position: 'fixed', top: '50%', left: '50%', 
+              marginTop: '-40px', marginLeft: '-40px',
+              width: '80px', height: '80px',
+              zIndex: 9999,
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}
+          >
+            <IosSpinner size={80} isSpinning={true} color="#fff" />
+          </motion.div>
+        )}
+        
+        {syncStage >= 2 && (
+          <motion.div
+            key="solar"
             initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
             animate={
-              syncStage === 1 
-                ? { scale: 1, opacity: 1, x: 0, y: 0 } 
-                : { x: flyTarget.x, y: flyTarget.y, scale: 0.2, opacity: 0 }
+              syncStage === 2 
+                ? { scale: 2.5, opacity: 1, x: 0, y: 0 } 
+                : { x: flyTarget.x, y: flyTarget.y, scale: 1, opacity: 1 }
             }
-            exit={{ opacity: 0, scale: 0 }}
+            exit={{ opacity: 0 }}
             transition={{ 
-              type: syncStage === 1 ? 'spring' : 'tween',
-              duration: syncStage === 1 ? 0.5 : 0.8,
+              type: syncStage === 2 ? 'spring' : 'tween',
+              duration: syncStage === 2 ? 0.5 : 0.8,
               ease: "easeInOut"
             }}
             style={{ 
@@ -536,7 +563,7 @@ export default function Home() {
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}
           >
-            <IosSpinner size={80} isSpinning={true} color="#fff" />
+            <SolarSystem />
           </motion.div>
         )}
       </AnimatePresence>
