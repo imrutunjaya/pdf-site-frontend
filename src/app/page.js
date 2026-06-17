@@ -62,7 +62,7 @@ const MatrixRain = () => {
   return <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />;
 };
 
-const IosSpinner = ({ size = 48, color = '#fff' }) => {
+const IosSpinner = ({ size = 48, color = '#fff', isSpinning = true }) => {
   return (
     <div style={{ position: 'relative', width: size, height: size, display: 'inline-block' }}>
       {[...Array(12)].map((_, i) => (
@@ -71,15 +71,15 @@ const IosSpinner = ({ size = 48, color = '#fff' }) => {
           style={{ 
             position: 'absolute', 
             top: 0, 
-            left: `${size/2 - 2}px`, 
-            width: '4px', 
+            left: `${size/2 - (size > 30 ? 2 : 1)}px`, 
+            width: size > 30 ? '4px' : '2px', 
             height: `${size/4}px`, 
             background: color, 
             borderRadius: '2px',
-            transformOrigin: `2px ${size/2}px`,
+            transformOrigin: `${size > 30 ? 2 : 1}px ${size/2}px`,
             transform: `rotate(${i * 30}deg)`,
-            opacity: 1,
-            animation: `ios-spin 1.2s linear infinite`,
+            opacity: isSpinning ? 1 : 0.5,
+            animation: isSpinning ? `ios-spin 1.2s linear infinite` : 'none',
             animationDelay: `${(i - 12) * 0.1}s`
           }} 
         />
@@ -326,11 +326,8 @@ export default function Home() {
               <button 
                 onClick={handleSync}
                 style={{ display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', padding: '0.5rem', transition: 'all 0.2s' }}
-                className="hover-white"
               >
-                <motion.div animate={{ rotate: isSyncing ? 360 : 0 }} transition={{ duration: 1, ease: "linear", repeat: isSyncing ? Infinity : 0 }}>
-                  <RefreshCw size={20} />
-                </motion.div>
+                <IosSpinner size={22} color="#9ca3af" isSpinning={isSyncing} />
               </button>
 
               {/* Search Bar */}
