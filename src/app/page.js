@@ -160,9 +160,20 @@ export default function Home() {
                   </div>
                 </div>
 
-                <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px' }}>
-                  <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
-                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1 }}>
+                    <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
+                  </h2>
+                  <button 
+                    onClick={() => setIsAboutModalOpen(true)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, alignSelf: 'flex-end', marginTop: '0.2rem' }}
+                    className="hover-bright"
+                  >
+                    <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
+                      By-Mrutunjaya
+                    </span>
+                  </button>
+                </div>
               </div>
 
               {/* Mobile Actions Toggle (Only visible on mobile via CSS) */}
@@ -241,17 +252,7 @@ export default function Home() {
                 </AnimatePresence>
               </div>
 
-              {/* Clickable Info Section */}
-              <button 
-                onClick={() => setIsAboutModalOpen(true)}
-                style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
-                className="hover-bright"
-              >
-                <span style={{ fontSize: 'clamp(1.2rem, 3vw, 1.75rem)', color: '#9ca3af', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', paddingRight: '0.5rem', opacity: 0.9 }}>
-                  By-Mrutunjaya
-                </span>
-                <Info size={24} color="#3b82f6" style={{ transition: 'all 0.2s', opacity: 0.8 }} />
-              </button>
+
             </div>
           </motion.div>
 
