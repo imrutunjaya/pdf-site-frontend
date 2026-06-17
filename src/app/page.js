@@ -244,77 +244,91 @@ export default function Home() {
               <div className="skeleton" style={{ height: '80px', width: '100%', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem' }}></div>
             ) : categories.length > 0 ? (
               
-              <motion.div 
-                variants={containerVariants}
-                initial="hidden"
-                animate="show"
-                style={{
-                  display: viewMode === 'grid' ? 'grid' : 'flex',
-                  flexDirection: viewMode === 'grid' ? 'row' : 'column',
-                  gridTemplateColumns: viewMode === 'grid' ? 'repeat(auto-fill, minmax(300px, 1fr))' : 'none',
-                  alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
-                  gap: viewMode === 'grid' ? '1.5rem' : '0',
-                  width: '100%'
-                }}
-              >
-                
-                {/* Repobase Node (Only visible in Flowcharts) */}
-                {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
-                  <motion.div variants={itemVariants} style={{ padding: '0.75rem 2rem', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#9ca3af', fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem' }}>
-                    Repobase
-                  </motion.div>
-                )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', width: '100%' }}>
+                {categories.map((section) => (
+                  <motion.div 
+                    key={section.sectionPath}
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                    style={{ width: '100%' }}
+                  >
+                    {/* Section Header */}
+                    <div style={{ marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <h2 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, color: '#fff', textTransform: 'capitalize' }}>
+                        {section.sectionName}
+                      </h2>
+                    </div>
 
-                {categories.map((cat, index) => (
-                  <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', width: '100%' }}>
-                    
-                    {/* Integrated Number and Arrow (Only in Flowcharts) */}
-                    {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
-                      <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: viewMode === 'flowchart-left' ? '3rem' : '0' }}>
-                        <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)' }}></div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '1rem', fontWeight: 700 }}>
-                          {index + 1}
-                        </div>
-                        <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)', position: 'relative' }}>
-                          <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(255,255,255,0.2)' }}></div>
-                        </div>
-                      </motion.div>
-                    )}
-
-                    {/* Node Card */}
-                    <motion.div variants={itemVariants} style={{ width: '100%', marginBottom: (viewMode === 'list' || viewMode === 'grid') ? '1rem' : '0' }}>
-                      <Link href={`/categories/${encodeURIComponent(cat.name)}`} style={{ textDecoration: 'none' }}>
-                        <motion.div 
-                          whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
-                          whileTap={{ scale: 0.98 }}
-                          transition={{ duration: 0.2 }}
-                          style={{ 
-                            display: 'flex', alignItems: 'center', gap: '1.5rem',
-                            padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.03)', 
-                            borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)',
-                            borderLeft: '4px solid #3b82f6',
-                            boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          {(viewMode === 'list' || viewMode === 'grid') && (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', color: '#60a5fa', fontSize: '0.8rem', fontWeight: 700 }}>
-                              {index + 1}
-                            </div>
-                          )}
-                          <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.75rem', borderRadius: '0.75rem' }}>
-                            <FolderOpen size={24} color="#60a5fa" />
-                          </div>
-                          <div style={{ flex: 1 }}>
-                            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.25rem 0', color: '#fff' }}>{cat.name}</h3>
-                            <span style={{ fontSize: '0.75rem', color: '#6b7280', fontFamily: 'monospace' }}>SELECT_PATH //</span>
-                          </div>
+                    <div style={{
+                      display: viewMode === 'grid' ? 'grid' : 'flex',
+                      flexDirection: viewMode === 'grid' ? 'row' : 'column',
+                      gridTemplateColumns: viewMode === 'grid' ? 'repeat(auto-fill, minmax(300px, 1fr))' : 'none',
+                      alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
+                      gap: viewMode === 'grid' ? '1.5rem' : '0',
+                      width: '100%'
+                    }}>
+                      
+                      {/* Section Node (Only visible in Flowcharts) */}
+                      {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
+                        <motion.div variants={itemVariants} style={{ padding: '0.75rem 2rem', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#9ca3af', fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', alignSelf: viewMode === 'flowchart-center' ? 'center' : 'flex-start' }}>
+                          {section.sectionName} Base
                         </motion.div>
-                      </Link>
-                    </motion.div>
-                  </div>
+                      )}
+
+                      {section.subCategories.map((cat, index) => (
+                        <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', width: '100%' }}>
+                          
+                          {/* Integrated Number and Arrow (Only in Flowcharts) */}
+                          {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
+                            <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: viewMode === 'flowchart-left' ? '3rem' : '0' }}>
+                              <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)' }}></div>
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '1rem', fontWeight: 700 }}>
+                                {index + 1}
+                              </div>
+                              <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)', position: 'relative' }}>
+                                <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(255,255,255,0.2)' }}></div>
+                              </div>
+                            </motion.div>
+                          )}
+
+                          {/* Node Card */}
+                          <motion.div variants={itemVariants} style={{ width: '100%', marginBottom: (viewMode === 'list' || viewMode === 'grid') ? '1rem' : '0' }}>
+                            <Link href={`/categories/${encodeURIComponent(cat.name)}?path=${encodeURIComponent(cat.path)}`} style={{ textDecoration: 'none' }}>
+                              <motion.div 
+                                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
+                                whileTap={{ scale: 0.98 }}
+                                transition={{ duration: 0.2 }}
+                                style={{ 
+                                  display: 'flex', alignItems: 'center', gap: '1.5rem',
+                                  padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.03)', 
+                                  borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)',
+                                  borderLeft: '4px solid #3b82f6',
+                                  boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                {(viewMode === 'list' || viewMode === 'grid') && (
+                                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', color: '#60a5fa', fontSize: '0.8rem', fontWeight: 700 }}>
+                                    {index + 1}
+                                  </div>
+                                )}
+                                <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.75rem', borderRadius: '0.75rem' }}>
+                                  <FolderOpen size={24} color="#60a5fa" />
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                  <h3 style={{ fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.25rem 0', color: '#fff' }}>{cat.name}</h3>
+                                  <span style={{ fontSize: '0.75rem', color: '#6b7280', fontFamily: 'monospace' }}>{section.sectionName}/{cat.name} //</span>
+                                </div>
+                              </motion.div>
+                            </Link>
+                          </motion.div>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
                 ))}
-              </motion.div>
+              </div>
 
             ) : (
               <motion.div variants={itemVariants} style={{ textAlign: 'center', padding: '4rem', color: '#6b7280', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '1rem', marginTop: '2rem' }}>

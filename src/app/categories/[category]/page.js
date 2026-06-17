@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState, use, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { FileText, ArrowLeft, Loader2, AlertCircle, Eye, Download, FolderOpen, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function CategoryDetailsPage({ params }) {
+function CategoryContent({ params }) {
   const resolvedParams = use(params);
+  const searchParams = useSearchParams();
   const categoryName = decodeURIComponent(resolvedParams.category);
+  const categoryPath = searchParams.get('path') || categoryName;
   
   const [pdfs, setPdfs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +26,7 @@ export default function CategoryDetailsPage({ params }) {
   useEffect(() => {
     async function fetchPdfs() {
       try {
-        const res = await fetch(`/api/pdfs?category=${encodeURIComponent(categoryName)}`);
+        const res = await fetch(`/api/pdfs?category=${encodeURIComponent(categoryPath)}`);
         const data = await res.json();
         
         if (!res.ok) throw new Error(data.error || 'Failed to fetch');
@@ -36,7 +39,7 @@ export default function CategoryDetailsPage({ params }) {
       }
     }
     fetchPdfs();
-  }, [categoryName]);
+  }, [categoryPath]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#050505', color: '#fff', fontFamily: 'sans-serif', position: 'relative', overflowX: 'hidden' }}>
@@ -184,5 +187,17 @@ export default function CategoryDetailsPage({ params }) {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function CategoryDetailsPage({ params }) {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: '#050505' }}>
+        <Loader2 className="animate-spin" size={48} color="#3b82f6" />
+      </div>
+    }>
+      <CategoryContent params={params} />
+    </Suspense>
   );
 }
