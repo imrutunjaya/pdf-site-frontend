@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid } from 'lucide-react';
+import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
@@ -12,6 +12,7 @@ export default function Home() {
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [pdfCoverEnabled, setPdfCoverEnabled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // viewMode options: 'flowchart-center', 'flowchart-left', 'list', 'grid'
   const [viewMode, setViewMode] = useState('flowchart-center');
@@ -132,40 +133,50 @@ export default function Home() {
             }}
           >
             <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-              
-              {/* CSS Solar System */}
-              <div className="solar-system" style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 0.5rem' }}>
-                {/* Sun */}
-                <div style={{
-                  width: '26px', height: '26px', borderRadius: '50%',
-                  background: 'radial-gradient(circle at 30% 30%, #fef08a, #f59e0b)',
-                  boxShadow: '0 0 20px rgba(245, 158, 11, 0.4), inset -4px -4px 8px rgba(217, 119, 6, 0.8)',
-                  position: 'relative', zIndex: 10
-                }}></div>
-                
-                {/* Orbit 1 */}
-                <div style={{ position: 'absolute', width: '45px', height: '45px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 4s linear infinite' }}>
-                  <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: '#9ca3af', boxShadow: '0 0 4px rgba(156,163,175,0.8)' }}></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                {/* CSS Solar System */}
+                <div className="solar-system" style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 0.5rem' }}>
+                  {/* Sun */}
+                  <div style={{
+                    width: '26px', height: '26px', borderRadius: '50%',
+                    background: 'radial-gradient(circle at 30% 30%, #fef08a, #f59e0b)',
+                    boxShadow: '0 0 20px rgba(245, 158, 11, 0.4), inset -4px -4px 8px rgba(217, 119, 6, 0.8)',
+                    position: 'relative', zIndex: 10
+                  }}></div>
+                  
+                  {/* Orbit 1 */}
+                  <div style={{ position: 'absolute', width: '45px', height: '45px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 4s linear infinite' }}>
+                    <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: '#9ca3af', boxShadow: '0 0 4px rgba(156,163,175,0.8)' }}></div>
+                  </div>
+
+                  {/* Orbit 2 */}
+                  <div style={{ position: 'absolute', width: '65px', height: '65px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 8s linear infinite' }}>
+                    <div style={{ position: 'absolute', top: '-4px', left: '50%', marginLeft: '-4px', width: '8px', height: '8px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8)', boxShadow: '0 0 6px rgba(59,130,246,0.6)' }}></div>
+                  </div>
+                  
+                  {/* Orbit 3 */}
+                  <div style={{ position: 'absolute', width: '85px', height: '85px', borderRadius: '50%', border: '1px dashed rgba(255,255,255,0.05)', animation: 'spin-orbit 14s linear infinite' }}>
+                    <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #fca5a5, #b91c1c)', boxShadow: '0 0 6px rgba(239,68,68,0.6)' }}></div>
+                  </div>
                 </div>
 
-                {/* Orbit 2 */}
-                <div style={{ position: 'absolute', width: '65px', height: '65px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 8s linear infinite' }}>
-                  <div style={{ position: 'absolute', top: '-4px', left: '50%', marginLeft: '-4px', width: '8px', height: '8px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8)', boxShadow: '0 0 6px rgba(59,130,246,0.6)' }}></div>
-                </div>
-                
-                {/* Orbit 3 */}
-                <div style={{ position: 'absolute', width: '85px', height: '85px', borderRadius: '50%', border: '1px dashed rgba(255,255,255,0.05)', animation: 'spin-orbit 14s linear infinite' }}>
-                  <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #fca5a5, #b91c1c)', boxShadow: '0 0 6px rgba(239,68,68,0.6)' }}></div>
-                </div>
+                <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px' }}>
+                  <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
+                </h2>
               </div>
 
-              <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px' }}>
-                <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
-              </h2>
+              {/* Mobile Actions Toggle (Only visible on mobile via CSS) */}
+              <button 
+                className="mobile-actions-toggle" 
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', padding: '0.5rem', borderRadius: '50%', cursor: 'pointer', display: 'none' }}
+              >
+                {isMobileMenuOpen ? <ChevronsUp size={20} /> : <ChevronsDown size={20} />}
+              </button>
             </div>
             
             {/* Header Right Actions */}
-            <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div className={`header-right ${isMobileMenuOpen ? 'mobile-open' : 'mobile-closed'}`} style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               
               {/* Settings Dropdown */}
               <div style={{ position: 'relative' }} ref={settingsRef}>
@@ -180,6 +191,7 @@ export default function Home() {
                 <AnimatePresence>
                   {isSettingsOpen && (
                     <motion.div 
+                      className="settings-dropdown"
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -451,9 +463,17 @@ export default function Home() {
         .hover-bg:hover { background: rgba(255,255,255,0.1) !important; }
         .hover-primary-border:hover { border-color: rgba(59,130,246,0.5) !important; background: rgba(59,130,246,0.1) !important; }
 
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
         @media (max-width: 768px) {
           .main-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
-          .header-left, .header-right { width: 100% !important; justify-content: space-between !important; }
+          .header-left { width: 100% !important; justify-content: space-between !important; }
+          .header-right { width: 100% !important; justify-content: flex-start !important; gap: 1.5rem !important; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; }
+          .header-right.mobile-closed { display: none !important; }
+          .header-right.mobile-open { display: flex !important; animation: fadeIn 0.2s ease-out; }
+          .mobile-actions-toggle { display: flex !important; align-items: center; justify-content: center; }
+          .settings-dropdown { left: 0 !important; right: auto !important; width: 260px !important; }
+          
           .solar-system { transform: scale(0.6) !important; margin: 0 !important; width: 60px !important; height: 60px !important; }
           
           .section-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
