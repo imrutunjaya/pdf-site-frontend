@@ -63,6 +63,34 @@ const SolarSystem = ({ innerRef, style, className }) => (
   </div>
 );
 
+const TypingTitle = ({ onComplete }) => {
+  const text = "Repository.Book";
+  const [displayedText, setDisplayedText] = useState("");
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      index++;
+      setDisplayedText(text.slice(0, index));
+      if (index === text.length) {
+        clearInterval(interval);
+        setTimeout(() => {
+          if (onComplete) onComplete();
+        }, 300);
+      }
+    }, 70); 
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <>
+      <span style={{ fontWeight: 600 }}>{displayedText.length > 10 ? displayedText.slice(0, 10) : displayedText}</span>
+      {displayedText.length > 10 && <span style={{ opacity: 0.8 }}>{displayedText.slice(10)}</span>}
+      {displayedText.length < text.length && <span style={{ animation: 'blink 1s step-end infinite', marginLeft: '2px', opacity: 0.5 }}>|</span>}
+    </>
+  );
+};
+
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -73,14 +101,39 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // 0: idle, 1: syncing (center spinner), 2: flying to solar system
+  // 0: idle, 1: typing in center, 2: flying to header
   const [syncStage, setSyncStage] = useState(0); 
-  const [flyTarget, setFlyTarget] = useState({ x: 0, y: 0 });
-  const solarSystemRef = useRef(null);
+  const [flyTarget, setFlyTarget] = useState({ x: 0, y: 0, scale: 1 });
+  const headerTitleRef = useRef(null);
+  const centerTitleRef = useRef(null);
+  
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
+  const [isFetchComplete, setIsFetchComplete] = useState(false);
 
   // viewMode options: 'flowchart-center', 'flowchart-left', 'list', 'grid'
   const [viewMode, setViewMode] = useState('flowchart-center');
   const settingsRef = useRef(null);
+
+  useEffect(() => {
+    if (syncStage === 1 && isTypingComplete && isFetchComplete) {
+      if (headerTitleRef.current && centerTitleRef.current) {
+        const headerRect = headerTitleRef.current.getBoundingClientRect();
+        const centerRect = centerTitleRef.current.getBoundingClientRect();
+        
+        const scale = headerRect.height / centerRect.height;
+        const x = headerRect.left - centerRect.left;
+        const y = headerRect.top - centerRect.top;
+        
+        setFlyTarget({ x, y, scale });
+      }
+      
+      setSyncStage(2);
+      
+      setTimeout(() => {
+        setSyncStage(0);
+      }, 800); // Wait for flight to finish
+    }
+  }, [syncStage, isTypingComplete, isFetchComplete]);
 
   // Handle clicking outside the settings dropdown
   useEffect(() => {
@@ -116,35 +169,18 @@ export default function Home() {
   };
 
   const handleSync = async () => {
-    if (solarSystemRef.current) {
-      const rect = solarSystemRef.current.getBoundingClientRect();
-      const endX = rect.left + rect.width / 2;
-      const endY = rect.top + rect.height / 2;
-      const startX = window.innerWidth / 2;
-      const startY = window.innerHeight / 2;
-      setFlyTarget({ x: endX - startX, y: endY - startY });
-    }
-
+    setIsTypingComplete(false);
+    setIsFetchComplete(false);
     setSyncStage(1);
+    
     try {
       const res = await fetch('/api/categories');
       const data = await res.json();
       if (res.ok) setCategories(data.categories || []);
-      
-      // Wait for fetch, then transition to stage 2 (Center Solar System)
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setSyncStage(2);
-      
-      // Wait to showcase the center Solar System
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSyncStage(3);
-      
-      // Wait for flight animation to finish
-      await new Promise(resolve => setTimeout(resolve, 800));
-      setSyncStage(0);
     } catch (err) {
       console.error(err);
-      setSyncStage(0);
+    } finally {
+      setIsFetchComplete(true);
     }
   };
 
@@ -244,10 +280,10 @@ export default function Home() {
             <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                 {/* CSS Solar System */}
-                <SolarSystem innerRef={solarSystemRef} style={{ margin: '0 0.5rem', opacity: syncStage > 0 ? 0 : 1, transition: 'opacity 0.2s' }} />
+                <SolarSystem style={{ margin: '0 0.5rem' }} />
 
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap' }}>
+                  <h2 ref={headerTitleRef} style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', opacity: syncStage > 0 ? 0 : 1, transition: 'opacity 0.2s' }}>
                     <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
                   </h2>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.2rem' }}>
@@ -508,62 +544,38 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Syncing Overlay and Flying Animation */}
+      {/* Syncing Overlay and Flying Text Animation */}
       <AnimatePresence>
         {syncStage > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(5,5,5,0.8)', backdropFilter: 'blur(8px)' }}
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence mode="wait">
-        {syncStage === 1 && (
-          <motion.div
-            key="spinner"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: 'spring', duration: 0.5 }}
             style={{ 
-              position: 'fixed', top: '50%', left: '50%', 
-              marginTop: '-40px', marginLeft: '-40px',
-              width: '80px', height: '80px',
-              zIndex: 9999,
+              position: 'fixed', inset: 0, zIndex: 9998, 
+              background: 'rgba(5,5,5,0.85)', backdropFilter: 'blur(8px)',
               display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}
           >
-            <IosSpinner size={80} isSpinning={true} color="#fff" />
-          </motion.div>
-        )}
-        
-        {syncStage >= 2 && (
-          <motion.div
-            key="solar"
-            initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
-            animate={
-              syncStage === 2 
-                ? { scale: 2.5, opacity: 1, x: 0, y: 0 } 
-                : { x: flyTarget.x, y: flyTarget.y, scale: 1, opacity: 1 }
-            }
-            exit={{ opacity: 0 }}
-            transition={{ 
-              type: syncStage === 2 ? 'spring' : 'tween',
-              duration: syncStage === 2 ? 0.5 : 0.8,
-              ease: "easeInOut"
-            }}
-            style={{ 
-              position: 'fixed', top: '50%', left: '50%', 
-              marginTop: '-40px', marginLeft: '-40px',
-              width: '80px', height: '80px',
-              zIndex: 9999,
-              display: 'flex', alignItems: 'center', justifyContent: 'center'
-            }}
-          >
-            <SolarSystem />
+            <motion.div
+              ref={centerTitleRef}
+              initial={{ scale: 1, x: 0, y: 0 }}
+              animate={
+                syncStage === 2 
+                  ? { x: flyTarget.x, y: flyTarget.y, scale: flyTarget.scale } 
+                  : { x: 0, y: 0, scale: 1 }
+              }
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              style={{ transformOrigin: 'top left' }}
+            >
+              <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', color: '#fff' }}>
+                {syncStage === 1 ? (
+                  <TypingTitle onComplete={() => setIsTypingComplete(true)} />
+                ) : (
+                  <><span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span></>
+                )}
+              </h2>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
