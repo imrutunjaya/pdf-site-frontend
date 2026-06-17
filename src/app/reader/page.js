@@ -25,6 +25,7 @@ export default function PdfReaderPage({ searchParams }) {
   
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showFsClose, setShowFsClose] = useState(true);
+  const [showCoverPage, setShowCoverPage] = useState(false);
   
   const containerRef = useRef(null);
   const fsTimeoutRef = useRef(null);
@@ -37,6 +38,9 @@ export default function PdfReaderPage({ searchParams }) {
     import('react-pdf').then(({ pdfjs }) => {
       pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
     });
+
+    const savedCover = localStorage.getItem('repo-pdf-cover');
+    if (savedCover) setShowCoverPage(savedCover === 'true');
 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -97,14 +101,28 @@ export default function PdfReaderPage({ searchParams }) {
   };
 
   const changePage = (offset) => {
+    const isSingle = window.innerWidth < 800;
+    if (isSingle) {
+      changeSinglePage(offset);
+      return;
+    }
     setDirection(offset > 0 ? 1 : -1);
     setPageNumber(prev => {
-      let next = prev + (offset * 2);
-      if (next < 1) return 1;
-      if (next > numPages) return prev;
-      // Force odd number for left page of spread
-      if (next % 2 === 0) next -= 1;
-      return next;
+      if (showCoverPage) {
+        let currentSpread = prev === 1 ? 0 : Math.floor(prev / 2);
+        let nextSpread = currentSpread + offset;
+        if (nextSpread <= 0) return 1;
+        let nextLeftPage = nextSpread * 2;
+        if (nextLeftPage > numPages) return prev;
+        return nextLeftPage;
+      } else {
+        let next = prev + (offset * 2);
+        if (next < 1) return 1;
+        if (next > numPages) return prev;
+        // Force odd number for left page of spread
+        if (next % 2 === 0) next -= 1;
+        return next;
+      }
     });
   };
 
@@ -307,7 +325,7 @@ export default function PdfReaderPage({ searchParams }) {
                     }}
                   >
                     {/* Left Page (or Single Page) */}
-                    <div className={"book-page " + (isSinglePageMode ? 'mobile-page' : '')} onClick={() => isSinglePageMode && changeSinglePage(1)}>
+                    <div className={"book-page " + (isSinglePageMode ? 'mobile-page' : '') + (showCoverPage && pageNumber === 1 && !isSinglePageMode ? ' cover-page' : '')} onClick={() => isSinglePageMode && changeSinglePage(1)}>
                       <Page 
                         pageNumber={pageNumber} 
                         scale={scale} 
@@ -320,7 +338,7 @@ export default function PdfReaderPage({ searchParams }) {
                     </div>
                     
                     {/* Right Page (only if not single page mode and within bounds) */}
-                    {!isSinglePageMode && pageNumber + 1 <= numPages && (
+                    {!isSinglePageMode && pageNumber + 1 <= numPages && !(showCoverPage && pageNumber === 1) && (
                       <div className="book-page">
                         <Page 
                           pageNumber={pageNumber + 1} 
@@ -361,11 +379,11 @@ export default function PdfReaderPage({ searchParams }) {
           border-radius: 4px;
         }
         /* Style the gap between pages to look like a book spine crease */
-        .book-page:first-child:not(.mobile-page) canvas {
+        .book-page:first-child:not(.mobile-page):not(.cover-page) canvas {
           border-top-right-radius: 0;
           border-bottom-right-radius: 0;
         }
-        .book-page:last-child:not(.mobile-page) canvas {
+        .book-page:last-child:not(.mobile-page):not(.cover-page) canvas {
           border-top-left-radius: 0;
           border-bottom-left-radius: 0;
         }
@@ -374,6 +392,9 @@ export default function PdfReaderPage({ searchParams }) {
           border-radius: 0 !important;
           box-shadow: none !important;
           max-width: 100vw;
+        }
+        .book-page.cover-page canvas {
+          border-radius: 4px !important;
         }
       `}</style>
     </div>

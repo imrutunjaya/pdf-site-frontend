@@ -1,4 +1,4 @@
-"use client";
+1"use client";
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
@@ -11,6 +11,7 @@ export default function Home() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [pdfCoverEnabled, setPdfCoverEnabled] = useState(false);
   
   // viewMode options: 'flowchart-center', 'flowchart-left', 'list', 'grid'
   const [viewMode, setViewMode] = useState('flowchart-center');
@@ -31,7 +32,16 @@ export default function Home() {
   useEffect(() => {
     const savedMode = localStorage.getItem('repo-view-mode');
     if (savedMode) setViewMode(savedMode);
+    
+    const savedCover = localStorage.getItem('repo-pdf-cover');
+    if (savedCover) setPdfCoverEnabled(savedCover === 'true');
   }, []);
+
+  const handlePdfCoverToggle = () => {
+    const newValue = !pdfCoverEnabled;
+    setPdfCoverEnabled(newValue);
+    localStorage.setItem('repo-pdf-cover', newValue);
+  };
 
   // Save to local storage when changed
   const handleViewChange = (mode) => {
@@ -193,6 +203,20 @@ export default function Home() {
                           <Grid size={18} color={viewMode === 'grid' ? '#60a5fa' : 'currentColor'} />
                           <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Grid View</span>
                         </button>
+
+                        <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '0.5rem 0' }}></div>
+                        <h4 style={{ margin: '0.25rem 0.75rem 0.5rem', fontSize: '0.75rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '1px' }}>Reader Options</h4>
+                        
+                        <div onClick={handlePdfCoverToggle} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', width: '100%', background: 'transparent', cursor: 'pointer', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-bg">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: pdfCoverEnabled ? '#fff' : '#9ca3af' }}>
+                            <FileText size={18} color={pdfCoverEnabled ? '#60a5fa' : 'currentColor'} />
+                            <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>PDF Cover Page</span>
+                          </div>
+                          <div style={{ position: 'relative', width: '36px', height: '20px', background: pdfCoverEnabled ? '#3b82f6' : 'rgba(255,255,255,0.1)', borderRadius: '10px', transition: 'background 0.3s' }}>
+                            <div style={{ position: 'absolute', top: '2px', left: pdfCoverEnabled ? '18px' : '2px', width: '16px', height: '16px', background: '#fff', borderRadius: '50%', transition: 'left 0.3s', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}></div>
+                          </div>
+                        </div>
+
 
                       </div>
                     </motion.div>
