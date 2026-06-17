@@ -166,7 +166,7 @@ export default function Home() {
                   </h2>
                   <button 
                     onClick={() => setIsAboutModalOpen(true)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, alignSelf: 'flex-end', marginTop: '0.2rem' }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, alignSelf: 'flex-end', marginTop: '0.5rem', marginRight: '-0.5rem' }}
                     className="hover-bright"
                   >
                     <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
