@@ -158,8 +158,8 @@ export default function Home() {
                 </div>
               </div>
 
-              <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 300, margin: 0, letterSpacing: '-1px' }}>
-                <span style={{ fontWeight: 700 }}>Repository</span>.Book
+              <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 200, margin: 0, letterSpacing: '-1px' }}>
+                <span style={{ fontWeight: 400 }}>Repository</span>.Book
               </h2>
             </div>
             
@@ -234,7 +234,7 @@ export default function Home() {
                 style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'none', border: 'none', cursor: 'pointer', outline: 'none' }}
                 className="hover-bright"
               >
-                <span style={{ fontSize: 'clamp(1.2rem, 3vw, 1.75rem)', color: '#9ca3af', fontFamily: '"Caveat", cursive', fontWeight: 400, transition: 'color 0.2s', paddingRight: '0.5rem' }}>
+                <span style={{ fontSize: 'clamp(1.2rem, 3vw, 1.75rem)', color: '#9ca3af', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', paddingRight: '0.5rem', opacity: 0.9 }}>
                   By-Mrutunjaya
                 </span>
                 <Info size={24} color="#3b82f6" style={{ transition: 'all 0.2s', opacity: 0.8 }} />
@@ -258,10 +258,11 @@ export default function Home() {
                     style={{ width: '100%' }}
                   >
                     {/* Section Header */}
-                    <div style={{ marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <h2 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, color: '#fff', textTransform: 'capitalize' }}>
+                    <div style={{ marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                      <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: '0 0 0.25rem 0', color: '#fff', textTransform: 'capitalize' }}>
                         {section.sectionName}
                       </h2>
+                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#9ca3af' }}>Explore all directories and files under {section.sectionName.toLowerCase()}.</p>
                     </div>
 
                     <div style={{
@@ -346,7 +347,10 @@ export default function Home() {
                                   <FolderOpen size={24} color="#60a5fa" />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                  <h3 style={{ fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.25rem 0', color: '#fff' }}>{cat.name}</h3>
+                                  <h3 style={{ fontSize: '1.125rem', fontWeight: 500, margin: '0 0 0.25rem 0', color: '#fff' }}>{cat.name}</h3>
+                                  <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: '0 0 0.5rem 0', lineHeight: 1.4 }}>
+                                    Access PDF materials, notes, and resources for {cat.name}.
+                                  </p>
                                   <span style={{ fontSize: '0.75rem', color: '#6b7280', fontFamily: 'monospace' }}>{section.sectionName}/{cat.name} //</span>
                                 </div>
                               </motion.div>
@@ -397,7 +401,7 @@ export default function Home() {
                 <div style={{ width: '90px', height: '90px', borderRadius: '50%', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', margin: '0 auto 1.5rem auto', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 800, color: '#fff', boxShadow: '0 0 30px rgba(59,130,246,0.4)', border: '3px solid rgba(255,255,255,0.1)' }}>
                   M
                 </div>
-                <h3 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', color: '#fff', fontFamily: '"Caveat", cursive', letterSpacing: '1px' }}>Mrutunjaya Pradhan</h3>
+                <h3 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', color: '#fff', fontFamily: '"Caveat", cursive', fontWeight: 300, letterSpacing: '1px', opacity: 0.9 }}>Mrutunjaya Pradhan</h3>
                 <p style={{ color: '#9ca3af', margin: 0, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Curator</p>
               </div>
               
