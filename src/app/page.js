@@ -194,7 +194,7 @@ export default function Home() {
                   <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.2rem' }}>
                     <button 
                       onClick={() => setIsAboutModalOpen(true)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, marginRight: '0.2rem' }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, transform: 'translateX(calc(100% - 1ch))' }}
                       className="hover-bright"
                     >
                       <span style={{ fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
@@ -216,25 +216,12 @@ export default function Home() {
             </div>
             
             {/* Header Right Actions */}
-            <div className={`header-right ${isMobileMenuOpen ? 'mobile-open' : 'mobile-closed'}`} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+            <div className={`header-right ${isMobileMenuOpen ? 'mobile-open' : 'mobile-closed'}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               
-              {/* Search Bar */}
-              <div className="search-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <input 
-                  type="text" 
-                  placeholder="Search..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2rem', padding: '0.5rem 1rem 0.5rem 2.5rem', color: '#fff', fontSize: '0.9rem', width: '100%', maxWidth: '200px', outline: 'none', transition: 'all 0.2s' }}
-                  className="search-input hover-primary-border"
-                />
-                <Search size={16} color="#9ca3af" style={{ position: 'absolute', left: '0.8rem' }} />
-              </div>
-
               {/* Sync Button */}
               <button 
                 onClick={handleSync}
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', cursor: 'pointer', padding: '0.6rem', borderRadius: '50%', transition: 'all 0.2s' }}
+                style={{ display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', cursor: 'pointer', padding: '0.6rem', borderRadius: '50%', transition: 'all 0.2s' }}
                 className="hover-white hover-bg"
               >
                 <motion.div animate={{ rotate: isSyncing ? 360 : 0 }} transition={{ duration: 1, ease: "linear", repeat: isSyncing ? Infinity : 0 }}>
@@ -242,8 +229,21 @@ export default function Home() {
                 </motion.div>
               </button>
 
+              {/* Search Bar */}
+              <div className="search-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center', flex: 1 }}>
+                <input 
+                  type="text" 
+                  placeholder="Search..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2rem', padding: '0.5rem 1rem 0.5rem 2.5rem', color: '#fff', fontSize: '0.9rem', width: '100%', maxWidth: '250px', outline: 'none', transition: 'all 0.2s' }}
+                  className="search-input hover-primary-border"
+                />
+                <Search size={16} color="#9ca3af" style={{ position: 'absolute', left: '0.8rem' }} />
+              </div>
+
               {/* Settings Dropdown */}
-              <div style={{ position: 'relative' }} ref={settingsRef}>
+              <div style={{ position: 'relative', flexShrink: 0 }} ref={settingsRef}>
                 <button 
                   onClick={() => setIsSettingsOpen(!isSettingsOpen)}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', cursor: 'pointer', padding: '0.6rem', borderRadius: '50%', transition: 'all 0.2s' }}
@@ -522,9 +522,9 @@ export default function Home() {
         @media (max-width: 768px) {
           .main-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
           .header-left { width: 100% !important; justify-content: space-between !important; }
-          .header-right { width: 100% !important; justify-content: center !important; gap: 1.5rem !important; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; flex-wrap: wrap !important; }
-          .search-wrapper { flex: 0 0 100% !important; order: -1; justify-content: center !important; margin-bottom: 0.5rem; }
-          .search-input { width: 100% !important; max-width: 100% !important; }
+          .header-right { width: 100% !important; justify-content: space-between !important; gap: 0.5rem !important; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; flex-wrap: nowrap !important; }
+          .search-wrapper { flex: 1 !important; }
+          .search-input { width: 100% !important; max-width: none !important; }
           .header-right.mobile-closed { display: none !important; }
           .header-right.mobile-open { display: flex !important; animation: fadeIn 0.2s ease-out; }
           .mobile-actions-toggle { display: flex !important; align-items: center; justify-content: center; }
