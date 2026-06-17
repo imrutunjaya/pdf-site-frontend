@@ -187,19 +187,21 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div style={{ position: 'relative' }}>
-                  <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap' }}>
                     <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
                   </h2>
-                  <button 
-                    onClick={() => setIsAboutModalOpen(true)}
-                    style={{ position: 'absolute', bottom: '-0.8rem', right: '0', background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0 }}
-                    className="hover-bright"
-                  >
-                    <span style={{ fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
-                      By-Mrutunjaya
-                    </span>
-                  </button>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.2rem' }}>
+                    <button 
+                      onClick={() => setIsAboutModalOpen(true)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, marginRight: '0.2rem' }}
+                      className="hover-bright"
+                    >
+                      <span style={{ fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
+                        By-Mrutunjaya
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -520,9 +522,9 @@ export default function Home() {
         @media (max-width: 768px) {
           .main-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
           .header-left { width: 100% !important; justify-content: space-between !important; }
-          .header-right { width: 100% !important; justify-content: flex-start !important; gap: 1rem !important; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; flex-wrap: wrap !important; }
-          .search-wrapper { flex: 1; min-width: 150px; }
-          .search-input { width: 100% !important; max-width: none !important; }
+          .header-right { width: 100% !important; justify-content: center !important; gap: 1.5rem !important; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; flex-wrap: wrap !important; }
+          .search-wrapper { flex: 0 0 100% !important; order: -1; justify-content: center !important; margin-bottom: 0.5rem; }
+          .search-input { width: 100% !important; max-width: 100% !important; }
           .header-right.mobile-closed { display: none !important; }
           .header-right.mobile-open { display: flex !important; animation: fadeIn 0.2s ease-out; }
           .mobile-actions-toggle { display: flex !important; align-items: center; justify-content: center; }
