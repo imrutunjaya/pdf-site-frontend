@@ -76,31 +76,56 @@ const SolarSystem = ({ innerRef, style, className }) => (
   </div>
 );
 
-const TypingTitle = ({ onComplete }) => {
-  const text = "Repository.Book";
-  const [displayedText, setDisplayedText] = useState("");
+const TypingBlock = ({ onComplete }) => {
+  const titleText = "Repository.Book";
+  const sigText = "By-Mrutunjaya";
+  
+  const [titleIdx, setTitleIdx] = useState(0);
+  const [sigIdx, setSigIdx] = useState(0);
 
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      index++;
-      setDisplayedText(text.slice(0, index));
-      if (index === text.length) {
-        clearInterval(interval);
-        setTimeout(() => {
-          if (onComplete) onComplete();
-        }, 300);
-      }
+    const titleInterval = setInterval(() => {
+      setTitleIdx(prev => {
+        if (prev < titleText.length) return prev + 1;
+        clearInterval(titleInterval);
+        return prev;
+      });
     }, 70); 
-    return () => clearInterval(interval);
+    return () => clearInterval(titleInterval);
   }, []);
 
+  useEffect(() => {
+    if (titleIdx === titleText.length) {
+      const sigInterval = setInterval(() => {
+        setSigIdx(prev => {
+          if (prev < sigText.length) return prev + 1;
+          clearInterval(sigInterval);
+          setTimeout(() => {
+            if (onComplete) onComplete();
+          }, 400);
+          return prev;
+        });
+      }, 50);
+      return () => clearInterval(sigInterval);
+    }
+  }, [titleIdx, titleText.length, sigText.length, onComplete]);
+
   return (
-    <>
-      <span style={{ fontWeight: 600 }}>{displayedText.length > 10 ? displayedText.slice(0, 10) : displayedText}</span>
-      {displayedText.length > 10 && <span style={{ opacity: 0.8 }}>{displayedText.slice(10)}</span>}
-      {displayedText.length < text.length && <span style={{ animation: 'blink 1s step-end infinite', marginLeft: '2px', opacity: 0.5 }}>|</span>}
-    </>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', color: '#fff' }}>
+        <span style={{ fontWeight: 600 }}>{titleText.slice(0, Math.min(10, titleIdx))}</span>
+        {titleIdx > 10 && <span style={{ opacity: 0.8 }}>{titleText.slice(10, titleIdx)}</span>}
+        {titleIdx < titleText.length && <span style={{ animation: 'blink 1s step-end infinite', marginLeft: '2px', opacity: 0.5 }}>|</span>}
+      </h2>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.32rem' }}>
+        <div style={{ transform: 'translateX(calc(100% - 1ch))' }}>
+          <span style={{ fontSize: 'clamp(1.44rem, 3.2vw, 1.92rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, opacity: 0.9 }}>
+            {sigText.slice(0, sigIdx)}
+            {titleIdx === titleText.length && sigIdx < sigText.length && <span style={{ animation: 'blink 1s step-end infinite', opacity: 0.5 }}>|</span>}
+          </span>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -126,6 +151,14 @@ export default function Home() {
   // viewMode options: 'flowchart-center', 'flowchart-left', 'list', 'grid'
   const [viewMode, setViewMode] = useState('flowchart-center');
   const settingsRef = useRef(null);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('hasSeenIntro')) {
+      setInitStage(0);
+    } else {
+      sessionStorage.setItem('hasSeenIntro', 'true');
+    }
+  }, []);
 
   useEffect(() => {
     if (initStage === 1 && isTypingComplete) {
@@ -296,8 +329,8 @@ export default function Home() {
                 {/* CSS Solar System */}
                 <SolarSystem style={{ margin: '0 0.5rem' }} />
 
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <h2 ref={headerTitleRef} style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', opacity: initStage > 0 ? 0 : 1, transition: 'opacity 0.2s' }}>
+                <div ref={headerTitleRef} style={{ display: 'flex', flexDirection: 'column', opacity: initStage > 0 ? 0 : 1, transition: 'opacity 0.2s' }}>
+                  <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap' }}>
                     <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
                   </h2>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.2rem' }}>
@@ -594,13 +627,22 @@ export default function Home() {
               transition={{ duration: 0.8, ease: "easeInOut" }}
               style={{ transformOrigin: 'top left' }}
             >
-              <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', color: '#fff' }}>
-                {initStage === 1 ? (
-                  <TypingTitle onComplete={() => setIsTypingComplete(true)} />
-                ) : (
-                  <><span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span></>
-                )}
-              </h2>
+              {initStage === 1 ? (
+                <TypingBlock onComplete={() => setIsTypingComplete(true)} />
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', color: '#fff' }}>
+                    <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
+                  </h2>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.32rem' }}>
+                    <div style={{ transform: 'translateX(calc(100% - 1ch))' }}>
+                      <span style={{ fontSize: 'clamp(1.44rem, 3.2vw, 1.92rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, opacity: 0.9 }}>
+                        By-Mrutunjaya
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
