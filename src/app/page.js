@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp } from 'lucide-react';
+import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
@@ -13,6 +13,8 @@ export default function Home() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [pdfCoverEnabled, setPdfCoverEnabled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSyncing, setIsSyncing] = useState(false);
   
   // viewMode options: 'flowchart-center', 'flowchart-left', 'list', 'grid'
   const [viewMode, setViewMode] = useState('flowchart-center');
@@ -51,6 +53,19 @@ export default function Home() {
     setIsSettingsOpen(false);
   };
 
+  const handleSync = async () => {
+    setIsSyncing(true);
+    try {
+      const res = await fetch('/api/categories');
+      const data = await res.json();
+      if (res.ok) setCategories(data.categories || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setTimeout(() => setIsSyncing(false), 600);
+    }
+  };
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       setMousePos({ x: e.clientX, y: e.clientY });
@@ -83,6 +98,18 @@ export default function Home() {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 200, damping: 20 } }
   };
+
+  const filteredCategories = categories.map(section => {
+    const query = searchQuery.toLowerCase();
+    if (section.sectionName.toLowerCase().includes(query)) {
+      return section;
+    }
+    const filteredSubs = section.subCategories.filter(cat => cat.name.toLowerCase().includes(query));
+    if (filteredSubs.length > 0) {
+      return { ...section, subCategories: filteredSubs };
+    }
+    return null;
+  }).filter(Boolean);
 
   return (
     <div style={{ background: '#050505', minHeight: '100vh', width: '100vw', overflow: 'hidden', position: 'relative', color: '#fff', fontFamily: 'sans-serif' }}>
@@ -160,16 +187,16 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ position: 'relative' }}>
                   <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1 }}>
                     <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
                   </h2>
                   <button 
                     onClick={() => setIsAboutModalOpen(true)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, alignSelf: 'flex-end', marginTop: '0.5rem', marginRight: '-0.5rem' }}
+                    style={{ position: 'absolute', bottom: '-0.8rem', right: '0', background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0 }}
                     className="hover-bright"
                   >
-                    <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
+                    <span style={{ fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
                       By-Mrutunjaya
                     </span>
                   </button>
@@ -187,8 +214,32 @@ export default function Home() {
             </div>
             
             {/* Header Right Actions */}
-            <div className={`header-right ${isMobileMenuOpen ? 'mobile-open' : 'mobile-closed'}`} style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div className={`header-right ${isMobileMenuOpen ? 'mobile-open' : 'mobile-closed'}`} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
               
+              {/* Search Bar */}
+              <div className="search-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input 
+                  type="text" 
+                  placeholder="Search..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '2rem', padding: '0.5rem 1rem 0.5rem 2.5rem', color: '#fff', fontSize: '0.9rem', width: '100%', maxWidth: '200px', outline: 'none', transition: 'all 0.2s' }}
+                  className="search-input hover-primary-border"
+                />
+                <Search size={16} color="#9ca3af" style={{ position: 'absolute', left: '0.8rem' }} />
+              </div>
+
+              {/* Sync Button */}
+              <button 
+                onClick={handleSync}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', cursor: 'pointer', padding: '0.6rem', borderRadius: '50%', transition: 'all 0.2s' }}
+                className="hover-white hover-bg"
+              >
+                <motion.div animate={{ rotate: isSyncing ? 360 : 0 }} transition={{ duration: 1, ease: "linear", repeat: isSyncing ? Infinity : 0 }}>
+                  <RefreshCw size={20} />
+                </motion.div>
+              </button>
+
               {/* Settings Dropdown */}
               <div style={{ position: 'relative' }} ref={settingsRef}>
                 <button 
@@ -260,10 +311,10 @@ export default function Home() {
           <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 0 4rem 0', width: '100%' }} className="custom-scrollbar">
             {loading ? (
               <div className="skeleton" style={{ height: '80px', width: '100%', background: 'rgba(255,255,255,0.03)', borderRadius: '0.75rem' }}></div>
-            ) : categories.length > 0 ? (
+            ) : filteredCategories.length > 0 ? (
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem', width: '100%' }}>
-                {categories.map((section) => (
+                {filteredCategories.map((section) => (
                   <motion.div 
                     key={section.sectionPath}
                     variants={containerVariants}
@@ -469,7 +520,9 @@ export default function Home() {
         @media (max-width: 768px) {
           .main-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
           .header-left { width: 100% !important; justify-content: space-between !important; }
-          .header-right { width: 100% !important; justify-content: flex-start !important; gap: 1.5rem !important; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; }
+          .header-right { width: 100% !important; justify-content: flex-start !important; gap: 1rem !important; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; flex-wrap: wrap !important; }
+          .search-wrapper { flex: 1; min-width: 150px; }
+          .search-input { width: 100% !important; max-width: none !important; }
           .header-right.mobile-closed { display: none !important; }
           .header-right.mobile-open { display: flex !important; animation: fadeIn 0.2s ease-out; }
           .mobile-actions-toggle { display: flex !important; align-items: center; justify-content: center; }
