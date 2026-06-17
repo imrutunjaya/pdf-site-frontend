@@ -111,21 +111,21 @@ const TypingBlock = ({ onComplete }) => {
   }, [titleIdx, titleText.length, sigText.length, onComplete]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', color: '#fff' }}>
+    <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', color: '#fff', display: 'flex', alignItems: 'flex-end' }}>
+      <div>
         <span style={{ fontWeight: 600 }}>{titleText.slice(0, Math.min(10, titleIdx))}</span>
         {titleIdx > 10 && <span style={{ opacity: 0.8 }}>{titleText.slice(10, titleIdx)}</span>}
         {titleIdx < titleText.length && <span style={{ animation: 'blink 1s step-end infinite', marginLeft: '2px', opacity: 0.5 }}>|</span>}
-      </h2>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.32rem' }}>
-        <div style={{ transform: 'translateX(calc(100% - 1ch))' }}>
-          <span style={{ fontSize: 'clamp(1.44rem, 3.2vw, 1.92rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, opacity: 0.9 }}>
+      </div>
+      {titleIdx === titleText.length && (
+        <div style={{ transform: 'translateY(20%)', marginLeft: '6px' }}>
+          <span style={{ fontSize: '0.48em', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, opacity: 0.9 }}>
             {sigText.slice(0, sigIdx)}
-            {titleIdx === titleText.length && sigIdx < sigText.length && <span style={{ animation: 'blink 1s step-end infinite', opacity: 0.5 }}>|</span>}
+            {sigIdx < sigText.length && <span style={{ animation: 'blink 1s step-end infinite', opacity: 0.5 }}>|</span>}
           </span>
         </div>
-      </div>
-    </div>
+      )}
+    </h2>
   );
 };
 
@@ -329,22 +329,20 @@ export default function Home() {
                 {/* CSS Solar System */}
                 <SolarSystem style={{ margin: '0 0.5rem' }} />
 
-                <div ref={headerTitleRef} style={{ display: 'flex', flexDirection: 'column', opacity: initStage > 0 ? 0 : 1, transition: 'opacity 0.2s' }}>
-                  <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap' }}>
+                <h2 ref={headerTitleRef} style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', opacity: initStage > 0 ? 0 : 1, transition: 'opacity 0.2s', display: 'flex', alignItems: 'flex-end' }}>
+                  <div>
                     <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
-                  </h2>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.2rem' }}>
-                    <button 
-                      onClick={() => setIsAboutModalOpen(true)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, transform: 'translateX(calc(100% - 1ch))' }}
-                      className="hover-bright"
-                    >
-                      <span style={{ fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
-                        By-Mrutunjaya
-                      </span>
-                    </button>
                   </div>
-                </div>
+                  <button 
+                    onClick={() => setIsAboutModalOpen(true)}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', outline: 'none', padding: 0, transform: 'translateY(20%)', marginLeft: '6px' }}
+                    className="hover-bright"
+                  >
+                    <span style={{ fontSize: '0.48em', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, transition: 'color 0.2s', opacity: 0.9 }}>
+                      By-Mrutunjaya
+                    </span>
+                  </button>
+                </h2>
               </div>
 
               {/* Mobile Actions Toggle (Only visible on mobile via CSS) */}
@@ -630,18 +628,16 @@ export default function Home() {
               {initStage === 1 ? (
                 <TypingBlock onComplete={() => setIsTypingComplete(true)} />
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', color: '#fff' }}>
+                <h2 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', color: '#fff', display: 'flex', alignItems: 'flex-end' }}>
+                  <div>
                     <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
-                  </h2>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', width: '100%', marginTop: '0.32rem' }}>
-                    <div style={{ transform: 'translateX(calc(100% - 1ch))' }}>
-                      <span style={{ fontSize: 'clamp(1.44rem, 3.2vw, 1.92rem)', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, opacity: 0.9 }}>
-                        By-Mrutunjaya
-                      </span>
-                    </div>
                   </div>
-                </div>
+                  <div style={{ transform: 'translateY(20%)', marginLeft: '6px' }}>
+                    <span style={{ fontSize: '0.48em', color: '#60a5fa', fontFamily: '"Caveat", cursive', fontWeight: 300, opacity: 0.9 }}>
+                      By-Mrutunjaya
+                    </span>
+                  </div>
+                </h2>
               )}
             </motion.div>
           </motion.div>
@@ -667,7 +663,7 @@ export default function Home() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: 'spring', damping: 20 }}
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', background: 'rgba(255,255,255,0.03)', padding: '3rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.05)' }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}
             >
               <IosSpinner size={64} color="#fff" isSpinning={true} />
               <h2 style={{ fontSize: '1.2rem', margin: 0, fontWeight: 300, letterSpacing: '4px', color: '#9ca3af', textTransform: 'uppercase' }}>
