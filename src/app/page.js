@@ -258,11 +258,37 @@ export default function Home() {
                     style={{ width: '100%' }}
                   >
                     {/* Section Header */}
-                    <div style={{ marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                      <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: '0 0 0.25rem 0', color: '#fff', textTransform: 'capitalize' }}>
-                        {section.sectionName}
-                      </h2>
-                      <p style={{ margin: 0, fontSize: '0.9rem', color: '#9ca3af' }}>Explore all directories and files under {section.sectionName.toLowerCase()}.</p>
+                    <div style={{ marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
+                      <div>
+                        <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: '0 0 0.25rem 0', color: '#fff', textTransform: 'capitalize' }}>
+                          {section.sectionName}
+                        </h2>
+                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#9ca3af' }}>Explore all directories and files under {section.sectionName.toLowerCase()}.</p>
+                      </div>
+
+                      {/* Section Syllabus Button */}
+                      <Link 
+                        href={`/reader?path=${encodeURIComponent(section.sectionName + '/Syllabus.pdf')}`} 
+                        style={{ 
+                          textDecoration: 'none', 
+                          padding: '0.5rem 1rem', 
+                          background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.05))', 
+                          border: '1px solid rgba(239, 68, 68, 0.3)', 
+                          color: '#fca5a5', 
+                          borderRadius: '0.5rem', 
+                          fontSize: '0.85rem', 
+                          fontWeight: 600,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          transition: 'all 0.2s',
+                          boxShadow: '0 4px 15px rgba(239, 68, 68, 0.1)'
+                        }}
+                        className="hover-syllabus"
+                      >
+                        <FileText size={16} />
+                        Syllabus
+                      </Link>
                     </div>
 
                     <div style={{
@@ -352,34 +378,6 @@ export default function Home() {
                                   </p>
                                   <span style={{ fontSize: '0.75rem', color: '#6b7280', fontFamily: 'monospace' }}>{section.sectionName}/{cat.name} //</span>
                                 </div>
-                              </Link>
-                              
-                              {/* Syllabus Button */}
-                              <Link 
-                                href={`/reader?path=${encodeURIComponent(cat.path + '/Syllabus.pdf')}`} 
-                                style={{ 
-                                  textDecoration: 'none', 
-                                  padding: '0.4rem 0.8rem', 
-                                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.05))', 
-                                  border: '1px solid rgba(239, 68, 68, 0.3)', 
-                                  color: '#fca5a5', 
-                                  borderRadius: '0.5rem', 
-                                  fontSize: '0.75rem', 
-                                  fontWeight: 600,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  gap: '0.4rem',
-                                  transition: 'all 0.2s',
-                                  position: 'absolute',
-                                  top: '1.25rem',
-                                  right: '1.5rem',
-                                  boxShadow: '0 4px 15px rgba(239, 68, 68, 0.1)',
-                                  zIndex: 10
-                                }}
-                                className="hover-syllabus"
-                              >
-                                <FileText size={16} />
-                                Syllabus
                               </Link>
                             </motion.div>
                           </motion.div>
