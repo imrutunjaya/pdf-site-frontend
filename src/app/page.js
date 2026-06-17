@@ -5,62 +5,11 @@ import Link from 'next/link';
 import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const MatrixRain = () => {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    
-    const setSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    setSize();
-    
-    const characters = '01';
-    const fontSize = 16;
-    const columns = Math.ceil(canvas.width / fontSize);
-    
-    const drops = [];
-    for (let x = 0; x < columns; x++) {
-      drops[x] = Math.random() * -100;
-    }
-    
-    const draw = () => {
-      ctx.fillStyle = 'rgba(5, 5, 5, 0.15)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)'; 
-      ctx.font = fontSize + 'px monospace';
-      
-      for (let i = 0; i < drops.length; i++) {
-        const text = characters.charAt(Math.floor(Math.random() * characters.length));
-        const y = drops[i] * fontSize;
-        
-        if (y > 0) {
-          ctx.fillText(text, i * fontSize, y);
-        }
-        
-        if (y > canvas.height && Math.random() > 0.98) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-    };
-    
-    const interval = setInterval(draw, 50);
-    window.addEventListener('resize', setSize);
-    
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('resize', setSize);
-    };
-  }, []);
-
-  return <canvas ref={canvasRef} style={{ display: 'block', width: '100%', height: '100%' }} />;
-};
+const IosSettingsIcon = ({ size = 20, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C10.8954 2 10 2.89543 10 4V4.5C10 5.32843 9.32843 6 8.5 6C8.01639 6 7.56847 5.76103 7.29177 5.36737C6.91885 4.8364 6.19694 4.67389 5.63263 5.04677L5.36737 5.29177C4.8364 5.66469 4.67389 6.38661 5.04677 6.95092C5.41966 7.48189 5.25714 8.20381 4.72618 8.5767C4.19521 8.94958 3.47329 8.78707 3.1004 8.25611C2.72751 7.72514 2 7.88766 2 8.41863V9.5C2 10.3284 2.67157 11 3.5 11C4.32843 11 5 11.6716 5 12.5C5 13.3284 4.32843 14 3.5 14C2.67157 14 2 14.6716 2 15.5V16.5C2 17.031 2.72751 17.1935 3.1004 16.6625C3.47329 16.1315 4.19521 15.969 4.72618 16.3419C5.25714 16.7148 5.41966 17.4367 5.04677 17.9677C4.67389 18.532 4.8364 19.2539 5.36737 19.6268L5.63263 19.8718C6.19694 20.2447 6.91885 20.0822 7.29177 19.5512C7.56847 19.1576 8.01639 18.9186 8.5 18.9186C9.32843 18.9186 10 19.5902 10 20.4186V21C10 22.1046 10.8954 23 12 23H13C14.1046 23 15 22.1046 15 21V20.4186C15 19.5902 15.6716 18.9186 16.5 18.9186C16.9836 18.9186 17.4315 19.1576 17.7082 19.5512C18.0811 20.0822 18.8031 20.2447 19.3674 19.8718L19.6326 19.6268C20.1636 19.2539 20.3261 18.532 19.9532 17.9677C19.5803 17.4367 19.7429 16.7148 20.2738 16.3419C20.8048 15.969 21.5267 16.1315 21.8996 16.6625C22.2725 17.1935 23 17.031 23 16.5V15.5C23 14.6716 22.3284 14 21.5 14C20.6716 14 20 13.3284 20 12.5C20 11.6716 20.6716 11 21.5 11C22.3284 11 23 10.3284 23 9.5V8.41863C23 7.88766 22.2725 7.72514 21.8996 8.25611C21.5267 8.78707 20.8048 8.94958 20.2738 8.5767C19.7429 8.20381 19.5803 7.48189 19.9532 6.95092C20.3261 6.38661 20.1636 5.66469 19.6326 5.29177L19.3674 5.04677C18.8031 4.67389 18.0811 4.8364 17.7082 5.36737C17.4315 5.76103 16.9836 6 16.5 6C15.6716 6 15 5.32843 15 4.5V4C15 2.89543 14.1046 2 13 2H12ZM12.5 15.5C14.1569 15.5 15.5 14.1569 15.5 12.5C15.5 10.8431 14.1569 9.5 12.5 9.5C10.8431 9.5 9.5 10.8431 9.5 12.5C9.5 14.1569 10.8431 15.5 12.5 15.5Z" />
+  </svg>
+);
 
 const IosSpinner = ({ size = 48, color = '#fff', isSpinning = true }) => {
   return (
@@ -88,24 +37,7 @@ const IosSpinner = ({ size = 48, color = '#fff', isSpinning = true }) => {
   );
 };
 
-const WaveText = ({ text }) => {
-  return (
-    <h2 style={{ fontSize: '1.5rem', margin: 0, fontWeight: 300, letterSpacing: '8px', color: '#fff', textTransform: 'uppercase', display: 'flex', justifyContent: 'center' }}>
-      {text.split('').map((char, index) => (
-        <span 
-          key={index} 
-          style={{ 
-            display: 'inline-block',
-            animation: 'wave 1.5s ease-in-out infinite',
-            animationDelay: `${index * 0.05}s`
-          }}
-        >
-          {char === ' ' ? '\u00A0' : char}
-        </span>
-      ))}
-    </h2>
-  );
-};
+
 
 export default function Home() {
   const [categories, setCategories] = useState([]);
@@ -116,8 +48,12 @@ export default function Home() {
   const [pdfCoverEnabled, setPdfCoverEnabled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSyncing, setIsSyncing] = useState(false);
   
+  // 0: idle, 1: syncing (center spinner), 2: flying to solar system
+  const [syncStage, setSyncStage] = useState(0); 
+  const [flyTarget, setFlyTarget] = useState({ x: 0, y: 0 });
+  const solarSystemRef = useRef(null);
+
   // viewMode options: 'flowchart-center', 'flowchart-left', 'list', 'grid'
   const [viewMode, setViewMode] = useState('flowchart-center');
   const settingsRef = useRef(null);
@@ -156,17 +92,29 @@ export default function Home() {
   };
 
   const handleSync = async () => {
-    setIsSyncing(true);
+    if (solarSystemRef.current) {
+      const rect = solarSystemRef.current.getBoundingClientRect();
+      const endX = rect.left + rect.width / 2;
+      const endY = rect.top + rect.height / 2;
+      const startX = window.innerWidth / 2;
+      const startY = window.innerHeight / 2;
+      setFlyTarget({ x: endX - startX, y: endY - startY });
+    }
+
+    setSyncStage(1);
     try {
       const res = await fetch('/api/categories');
       const data = await res.json();
       if (res.ok) setCategories(data.categories || []);
-      // Guarantee at least 2.5 seconds of Matrix goodness!
-      await new Promise(resolve => setTimeout(resolve, 2500));
+      
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setSyncStage(2);
+      
+      await new Promise(resolve => setTimeout(resolve, 800));
+      setSyncStage(0);
     } catch (err) {
       console.error(err);
-    } finally {
-      setIsSyncing(false);
+      setSyncStage(0);
     }
   };
 
@@ -266,7 +214,7 @@ export default function Home() {
             <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                 {/* CSS Solar System */}
-                <div className="solar-system" style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 0.5rem' }}>
+                <div ref={solarSystemRef} className="solar-system" style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 0.5rem' }}>
                   {/* Sun */}
                   <div style={{
                     width: '26px', height: '26px', borderRadius: '50%',
@@ -327,7 +275,7 @@ export default function Home() {
                 onClick={handleSync}
                 style={{ display: 'flex', flexShrink: 0, alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', padding: '0.5rem', transition: 'all 0.2s' }}
               >
-                <IosSpinner size={22} color="#9ca3af" isSpinning={isSyncing} />
+                <IosSpinner size={22} color="#9ca3af" isSpinning={syncStage > 0} />
               </button>
 
               {/* Search Bar */}
@@ -350,7 +298,7 @@ export default function Home() {
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', cursor: 'pointer', padding: '0.6rem', borderRadius: '50%', transition: 'all 0.2s' }}
                   className="hover-white hover-bg"
                 >
-                  <Settings size={20} />
+                  <IosSettingsIcon size={20} />
                 </button>
                 
                 <AnimatePresence>
@@ -553,26 +501,42 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Matrix Syncing Overlay */}
+      {/* Syncing Overlay and Flying Animation */}
       <AnimatePresence>
-        {isSyncing && (
+        {syncStage > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            animate={{ opacity: syncStage === 1 ? 1 : 0 }}
             exit={{ opacity: 0 }}
-            style={{ position: 'fixed', inset: 0, zIndex: 9999, background: '#050505', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(5,5,5,0.7)', backdropFilter: 'blur(8px)' }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {syncStage > 0 && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
+            animate={
+              syncStage === 1 
+                ? { scale: 1, opacity: 1, x: 0, y: 0 } 
+                : { x: flyTarget.x, y: flyTarget.y, scale: 0.2, opacity: 0 }
+            }
+            exit={{ opacity: 0, scale: 0 }}
+            transition={{ 
+              type: syncStage === 1 ? 'spring' : 'tween',
+              duration: syncStage === 1 ? 0.5 : 0.8,
+              ease: "easeInOut"
+            }}
+            style={{ 
+              position: 'fixed', top: '50%', left: '50%', 
+              marginTop: '-40px', marginLeft: '-40px',
+              width: '80px', height: '80px',
+              zIndex: 9999,
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
+            }}
           >
-            <MatrixRain />
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ delay: 0.2, type: 'spring' }}
-              style={{ position: 'absolute', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', background: 'rgba(5,5,5,0.7)', padding: '3rem 5rem', borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', boxShadow: '0 0 50px rgba(255,255,255,0.1)' }}
-            >
-              <IosSpinner size={48} />
-              <WaveText text="Synchronizing" />
-            </motion.div>
+            <IosSpinner size={80} isSpinning={true} color="#fff" />
           </motion.div>
         )}
       </AnimatePresence>
