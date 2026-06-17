@@ -303,7 +303,7 @@ export default function Home() {
                       
                       {/* Vertical Tree Branch Line (Only for flowchart-left) */}
                       {viewMode === 'flowchart-left' && section.subCategories.length > 0 && (
-                         <div style={{ position: 'absolute', top: '1rem', bottom: '2rem', left: '2.5rem', width: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1 }}></div>
+                         <div style={{ position: 'absolute', top: '-1.5rem', bottom: '2rem', left: '2.5rem', width: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1 }}></div>
                       )}
 
                       {section.subCategories.map((cat, index) => (
