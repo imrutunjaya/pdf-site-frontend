@@ -301,23 +301,9 @@ export default function Home() {
                       position: 'relative'
                     }}>
                       
-                      {/* Section Node (Only visible in Flowcharts) */}
-                      {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
-                        <motion.div variants={itemVariants} style={{ 
-                          padding: '0.75rem 2rem', border: '2px solid rgba(255,255,255,0.1)', 
-                          borderRadius: '2rem', color: '#fff', fontFamily: 'monospace', 
-                          fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', 
-                          alignSelf: viewMode === 'flowchart-center' ? 'center' : 'flex-start',
-                          background: 'rgba(59,130,246,0.1)',
-                          position: 'relative', zIndex: 2
-                        }}>
-                          {section.sectionName}
-                        </motion.div>
-                      )}
-
                       {/* Vertical Tree Branch Line (Only for flowchart-left) */}
                       {viewMode === 'flowchart-left' && section.subCategories.length > 0 && (
-                         <div style={{ position: 'absolute', top: '3rem', bottom: '2rem', left: '2.5rem', width: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1 }}></div>
+                         <div style={{ position: 'absolute', top: '1rem', bottom: '2rem', left: '2.5rem', width: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1 }}></div>
                       )}
 
                       {section.subCategories.map((cat, index) => (
