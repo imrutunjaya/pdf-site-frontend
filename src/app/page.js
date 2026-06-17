@@ -158,8 +158,8 @@ export default function Home() {
                 </div>
               </div>
 
-              <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 300, margin: 0, letterSpacing: '-1px' }}>
-                <span style={{ fontWeight: 600 }}>Repository</span>.Book
+              <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px' }}>
+                <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
               </h2>
             </div>
             
@@ -324,20 +324,18 @@ export default function Home() {
 
                           {/* Node Card */}
                           <motion.div variants={itemVariants} style={{ width: '100%', marginBottom: (viewMode === 'list' || viewMode === 'grid') ? '1rem' : '0' }}>
-                            <Link href={`/categories/${encodeURIComponent(cat.name)}?path=${encodeURIComponent(cat.path)}`} style={{ textDecoration: 'none' }}>
-                              <motion.div 
-                                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.08)' }}
-                                whileTap={{ scale: 0.98 }}
-                                transition={{ duration: 0.2 }}
-                                style={{ 
-                                  display: 'flex', alignItems: 'center', gap: '1.5rem',
-                                  padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.03)', 
-                                  borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)',
-                                  borderLeft: '4px solid #3b82f6',
-                                  boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-                                  cursor: 'pointer'
-                                }}
-                              >
+                            <motion.div 
+                              whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                              transition={{ duration: 0.2 }}
+                              style={{ 
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.03)', 
+                                borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)',
+                                borderLeft: '4px solid #3b82f6',
+                                boxShadow: '0 8px 30px rgba(0,0,0,0.3)'
+                              }}
+                            >
+                              <Link href={`/categories/${encodeURIComponent(cat.name)}?path=${encodeURIComponent(cat.path)}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
                                 {(viewMode === 'list' || viewMode === 'grid') && (
                                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', color: '#60a5fa', fontSize: '0.8rem', fontWeight: 700 }}>
                                     {index + 1}
@@ -346,15 +344,40 @@ export default function Home() {
                                 <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.75rem', borderRadius: '0.75rem' }}>
                                   <FolderOpen size={24} color="#60a5fa" />
                                 </div>
-                                <div style={{ flex: 1 }}>
+                                <div>
                                   <h3 style={{ fontSize: '1.125rem', fontWeight: 500, margin: '0 0 0.25rem 0', color: '#fff' }}>{cat.name}</h3>
                                   <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: '0 0 0.5rem 0', lineHeight: 1.4 }}>
                                     Access PDF materials, notes, and resources for {cat.name}.
                                   </p>
                                   <span style={{ fontSize: '0.75rem', color: '#6b7280', fontFamily: 'monospace' }}>{section.sectionName}/{cat.name} //</span>
                                 </div>
-                              </motion.div>
-                            </Link>
+                              </Link>
+                              
+                              {/* Syllabus Button */}
+                              <Link 
+                                href={`/reader?path=${encodeURIComponent(cat.path + '/Syllabus.pdf')}`} 
+                                style={{ 
+                                  textDecoration: 'none', 
+                                  padding: '0.6rem 1.2rem', 
+                                  background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(217, 119, 6, 0.05))', 
+                                  border: '1px solid rgba(245, 158, 11, 0.3)', 
+                                  color: '#fbbf24', 
+                                  borderRadius: '0.5rem', 
+                                  fontSize: '0.85rem', 
+                                  fontWeight: 600,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '0.5rem',
+                                  transition: 'all 0.2s',
+                                  marginLeft: '1rem',
+                                  boxShadow: '0 4px 15px rgba(245, 158, 11, 0.1)'
+                                }}
+                                className="hover-syllabus"
+                              >
+                                <FileText size={16} />
+                                Syllabus
+                              </Link>
+                            </motion.div>
                           </motion.div>
                         </div>
                       ))}
@@ -418,6 +441,7 @@ export default function Home() {
 
       <style>{`
         body { margin: 0; background: #050505; }
+        .hover-syllabus:hover { background: rgba(245, 158, 11, 0.25) !important; border-color: rgba(245, 158, 11, 0.6) !important; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.2) !important; }
         .skeleton { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         @keyframes pulse {
           0%, 100% { opacity: 1; }
