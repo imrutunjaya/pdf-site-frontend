@@ -158,8 +158,8 @@ export default function Home() {
                 </div>
               </div>
 
-              <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 200, margin: 0, letterSpacing: '-1px' }}>
-                <span style={{ fontWeight: 400 }}>Repository</span>.Book
+              <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 300, margin: 0, letterSpacing: '-1px' }}>
+                <span style={{ fontWeight: 600 }}>Repository</span>.Book
               </h2>
             </div>
             
