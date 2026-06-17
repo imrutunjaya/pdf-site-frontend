@@ -132,26 +132,30 @@ export default function Home() {
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               
-              {/* Realistic CSS Earth and Moon */}
-              <div style={{ position: 'relative', width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {/* CSS Solar System */}
+              <div style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 0.5rem' }}>
+                {/* Sun */}
                 <div style={{
-                  width: '45px', height: '45px', borderRadius: '50%',
-                  backgroundImage: 'url(https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Land_ocean_ice_2048.jpg/512px-Land_ocean_ice_2048.jpg)',
-                  backgroundSize: '200% 100%',
-                  boxShadow: 'inset -8px -8px 15px rgba(0,0,0,0.9), inset 2px 2px 5px rgba(255,255,255,0.3), 0 0 20px rgba(59,130,246,0.3)',
-                  animation: 'spin-earth 20s linear infinite',
-                  position: 'relative', zIndex: 2
+                  width: '26px', height: '26px', borderRadius: '50%',
+                  background: 'radial-gradient(circle at 30% 30%, #fef08a, #f59e0b)',
+                  boxShadow: '0 0 20px rgba(245, 158, 11, 0.4), inset -4px -4px 8px rgba(217, 119, 6, 0.8)',
+                  position: 'relative', zIndex: 10
                 }}></div>
-                <div style={{
-                  width: '12px', height: '12px', borderRadius: '50%',
-                  background: '#ffffff',
-                  boxShadow: '0 0 10px rgba(255,255,255,0.8), inset -3px -3px 4px rgba(0,0,0,0.3)',
-                  position: 'absolute',
-                  animation: 'orbit-moon 10s linear infinite',
-                  left: '50%', top: '50%',
-                  marginTop: '-6px', marginLeft: '-6px',
-                  zIndex: 1
-                }}></div>
+                
+                {/* Orbit 1 */}
+                <div style={{ position: 'absolute', width: '45px', height: '45px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 4s linear infinite' }}>
+                  <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: '#9ca3af', boxShadow: '0 0 4px rgba(156,163,175,0.8)' }}></div>
+                </div>
+
+                {/* Orbit 2 */}
+                <div style={{ position: 'absolute', width: '65px', height: '65px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 8s linear infinite' }}>
+                  <div style={{ position: 'absolute', top: '-4px', left: '50%', marginLeft: '-4px', width: '8px', height: '8px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8)', boxShadow: '0 0 6px rgba(59,130,246,0.6)' }}></div>
+                </div>
+                
+                {/* Orbit 3 */}
+                <div style={{ position: 'absolute', width: '85px', height: '85px', borderRadius: '50%', border: '1px dashed rgba(255,255,255,0.05)', animation: 'spin-orbit 14s linear infinite' }}>
+                  <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #fca5a5, #b91c1c)', boxShadow: '0 0 6px rgba(239,68,68,0.6)' }}></div>
+                </div>
               </div>
 
               <h2 style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 300, margin: 0, letterSpacing: '-1px' }}>
@@ -266,22 +270,47 @@ export default function Home() {
                       gridTemplateColumns: viewMode === 'grid' ? 'repeat(auto-fill, minmax(300px, 1fr))' : 'none',
                       alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
                       gap: viewMode === 'grid' ? '1.5rem' : '0',
-                      width: '100%'
+                      width: '100%',
+                      position: 'relative'
                     }}>
                       
                       {/* Section Node (Only visible in Flowcharts) */}
                       {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
-                        <motion.div variants={itemVariants} style={{ padding: '0.75rem 2rem', border: '2px solid rgba(255,255,255,0.1)', borderRadius: '2rem', color: '#9ca3af', fontFamily: 'monospace', fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', alignSelf: viewMode === 'flowchart-center' ? 'center' : 'flex-start' }}>
-                          {section.sectionName} Base
+                        <motion.div variants={itemVariants} style={{ 
+                          padding: '0.75rem 2rem', border: '2px solid rgba(255,255,255,0.1)', 
+                          borderRadius: '2rem', color: '#fff', fontFamily: 'monospace', 
+                          fontSize: '1.25rem', fontWeight: 600, marginBottom: '1rem', 
+                          alignSelf: viewMode === 'flowchart-center' ? 'center' : 'flex-start',
+                          background: 'rgba(59,130,246,0.1)',
+                          position: 'relative', zIndex: 2
+                        }}>
+                          {section.sectionName}
                         </motion.div>
                       )}
 
+                      {/* Vertical Tree Branch Line (Only for flowchart-left) */}
+                      {viewMode === 'flowchart-left' && section.subCategories.length > 0 && (
+                         <div style={{ position: 'absolute', top: '3rem', bottom: '2rem', left: '2.5rem', width: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1 }}></div>
+                      )}
+
                       {section.subCategories.map((cat, index) => (
-                        <div key={cat.path} style={{ display: 'flex', flexDirection: 'column', alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', width: '100%' }}>
+                        <div key={cat.path} style={{ 
+                          display: 'flex', flexDirection: 'column', 
+                          alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
+                          width: '100%',
+                          position: 'relative',
+                          paddingLeft: viewMode === 'flowchart-left' ? '5rem' : '0',
+                          marginBottom: viewMode === 'flowchart-left' ? '1rem' : '0'
+                        }}>
                           
-                          {/* Integrated Number and Arrow (Only in Flowcharts) */}
-                          {(viewMode === 'flowchart-center' || viewMode === 'flowchart-left') && (
-                            <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: viewMode === 'flowchart-left' ? '3rem' : '0' }}>
+                          {/* Horizontal Tree Branch Line (Only for flowchart-left) */}
+                          {viewMode === 'flowchart-left' && (
+                            <div style={{ position: 'absolute', top: '50%', left: '2.5rem', width: '2.5rem', height: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1, transform: 'translateY(-50%)' }}></div>
+                          )}
+
+                          {/* Center Flowchart Connectors */}
+                          {viewMode === 'flowchart-center' && (
+                            <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                               <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)' }}></div>
                               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '1rem', fontWeight: 700 }}>
                                 {index + 1}
@@ -390,15 +419,9 @@ export default function Home() {
           0%, 100% { opacity: 1; }
           50% { opacity: .3; }
         }
-        @keyframes spin-earth {
-          from { background-position: 0 0; }
-          to { background-position: 200% 0; }
-        }
-        @keyframes orbit-moon {
-          from { transform: rotate(0deg) translateX(45px) rotate(0deg); z-index: 3; }
-          49.9% { z-index: 3; }
-          50% { transform: rotate(180deg) translateX(45px) rotate(-180deg); z-index: 1; }
-          100% { transform: rotate(360deg) translateX(45px) rotate(-360deg); z-index: 1; }
+        @keyframes spin-orbit {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
