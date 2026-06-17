@@ -125,15 +125,16 @@ export default function Home() {
           {/* Header */}
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 1 }}
+            className="main-header"
             style={{ 
               display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
               borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem', marginBottom: '2rem' 
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               
               {/* CSS Solar System */}
-              <div style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 0.5rem' }}>
+              <div className="solar-system" style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 0.5rem' }}>
                 {/* Sun */}
                 <div style={{
                   width: '26px', height: '26px', borderRadius: '50%',
@@ -164,7 +165,7 @@ export default function Home() {
             </div>
             
             {/* Header Right Actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               
               {/* Settings Dropdown */}
               <div style={{ position: 'relative' }} ref={settingsRef}>
@@ -258,7 +259,7 @@ export default function Home() {
                     style={{ width: '100%' }}
                   >
                     {/* Section Header */}
-                    <div style={{ marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
+                    <div className="section-header" style={{ marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                       <div>
                         <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: '0 0 0.25rem 0', color: '#fff', textTransform: 'capitalize' }}>
                           {section.sectionName}
@@ -284,7 +285,7 @@ export default function Home() {
                           transition: 'all 0.2s',
                           boxShadow: '0 4px 15px rgba(239, 68, 68, 0.1)'
                         }}
-                        className="hover-syllabus"
+                        className="hover-syllabus section-syllabus-btn"
                       >
                         <FileText size={16} />
                         Syllabus
@@ -303,11 +304,11 @@ export default function Home() {
                       
                       {/* Vertical Tree Branch Line (Only for flowchart-left) */}
                       {viewMode === 'flowchart-left' && section.subCategories.length > 0 && (
-                         <div style={{ position: 'absolute', top: '-1.5rem', bottom: '2rem', left: '2.5rem', width: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1 }}></div>
+                         <div className="vertical-branch" style={{ position: 'absolute', top: '-1.5rem', bottom: '2rem', left: '2.5rem', width: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1 }}></div>
                       )}
 
                       {section.subCategories.map((cat, index) => (
-                        <div key={cat.path} style={{ 
+                        <div className="flowchart-node-wrapper" key={cat.path} style={{ 
                           display: 'flex', flexDirection: 'column', 
                           alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
                           width: '100%',
@@ -318,7 +319,7 @@ export default function Home() {
                           
                           {/* Horizontal Tree Branch Line (Only for flowchart-left) */}
                           {viewMode === 'flowchart-left' && (
-                            <div style={{ position: 'absolute', top: '50%', left: '2.5rem', width: '2.5rem', height: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1, transform: 'translateY(-50%)' }}></div>
+                            <div className="horizontal-branch" style={{ position: 'absolute', top: '50%', left: '2.5rem', width: '2.5rem', height: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1, transform: 'translateY(-50%)' }}></div>
                           )}
 
                           {/* Center Flowchart Connectors */}
@@ -337,6 +338,7 @@ export default function Home() {
                           {/* Node Card */}
                           <motion.div variants={itemVariants} style={{ width: '100%', marginBottom: (viewMode === 'list' || viewMode === 'grid') ? '1rem' : '0' }}>
                             <motion.div 
+                              className="category-card"
                               whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.05)' }}
                               transition={{ duration: 0.2 }}
                               style={{ 
@@ -348,7 +350,7 @@ export default function Home() {
                                 position: 'relative'
                               }}
                             >
-                              <Link href={`/categories/${encodeURIComponent(cat.name)}?path=${encodeURIComponent(cat.path)}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+                              <Link className="category-link" href={`/categories/${encodeURIComponent(cat.name)}?path=${encodeURIComponent(cat.path)}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
                                 {(viewMode === 'list' || viewMode === 'grid') && (
                                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(59,130,246,0.1)', color: '#60a5fa', fontSize: '0.8rem', fontWeight: 700 }}>
                                     {index + 1}
@@ -448,6 +450,23 @@ export default function Home() {
         .hover-white:hover { color: #fff !important; }
         .hover-bg:hover { background: rgba(255,255,255,0.1) !important; }
         .hover-primary-border:hover { border-color: rgba(59,130,246,0.5) !important; background: rgba(59,130,246,0.1) !important; }
+
+        @media (max-width: 768px) {
+          .main-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
+          .header-left, .header-right { width: 100% !important; justify-content: space-between !important; }
+          .solar-system { transform: scale(0.6) !important; margin: 0 !important; width: 60px !important; height: 60px !important; }
+          
+          .section-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
+          .section-header > div { width: 100% !important; }
+          .section-syllabus-btn { align-self: flex-start !important; width: 100% !important; justify-content: center !important; }
+          
+          .category-card { flex-direction: column !important; align-items: flex-start !important; padding: 1rem !important; gap: 1rem !important; }
+          .category-link { width: 100% !important; gap: 1rem !important; }
+          
+          .flowchart-node-wrapper { padding-left: 2rem !important; }
+          .vertical-branch { left: 1rem !important; }
+          .horizontal-branch { left: 1rem !important; width: 1rem !important; }
+        }
       `}</style>
     </div>
   );
