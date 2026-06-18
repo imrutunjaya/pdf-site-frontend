@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw } from 'lucide-react';
+import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 
@@ -375,6 +375,31 @@ export default function Home() {
             {/* Header Right Actions */}
             <div className={`header-right ${isMobileMenuOpen ? 'mobile-open' : 'mobile-closed'}`} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               
+              {/* CBT Test Link */}
+              <a 
+                href="https://cbt-test01.netlify.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  padding: '0.5rem 1rem',
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.2)',
+                  borderRadius: '2rem',
+                  color: '#6ee7b7',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  transition: 'all 0.2s'
+                }}
+                className="hover-primary-border"
+              >
+                <ExternalLink size={14} />
+                CBT Test
+              </a>
+
               {/* Sync Button */}
               <button 
                 onClick={handleSync}
