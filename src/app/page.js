@@ -486,31 +486,6 @@ export default function Home() {
                           </h2>
                           <p style={{ margin: 0, fontSize: '0.9rem', color: '#9ca3af' }}>Explore all directories and files under {section.sectionName.toLowerCase()}.</p>
                         </div>
-                        
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }} className="syllabus-container">
-                          <Link 
-                            href={`/reader?path=${encodeURIComponent(section.sectionName + '/Syllabus.pdf')}`} 
-                            style={{ 
-                              textDecoration: 'none', 
-                              padding: '0.5rem 1rem', 
-                              background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.05))', 
-                              border: '1px solid rgba(239, 68, 68, 0.3)', 
-                              color: '#fca5a5', 
-                              borderRadius: '0.5rem', 
-                              fontSize: '0.85rem', 
-                              fontWeight: 600,
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '0.5rem',
-                              transition: 'all 0.2s',
-                              boxShadow: '0 4px 15px rgba(239, 68, 68, 0.1)'
-                            }}
-                            className="hover-syllabus section-syllabus-btn"
-                          >
-                            <FileText size={16} />
-                            Syllabus
-                          </Link>
-                        </div>
                       </div>
 
                     <div style={{

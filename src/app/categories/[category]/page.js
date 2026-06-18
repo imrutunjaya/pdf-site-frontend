@@ -109,36 +109,11 @@ function CategoryContent({ params }) {
             {/* Vertical Tree Branch Line */}
             <div style={{ position: 'absolute', top: '1.5rem', bottom: '2rem', left: '0', width: '2px', background: 'linear-gradient(to bottom, rgba(59,130,246,0.5), transparent)' }}></div>
             
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem', marginLeft: 'clamp(-1.5rem, -4vw, -3rem)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.3)', zIndex: 2 }}>
-                  <FolderOpen size={24} color="#3b82f6" />
-                </div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', marginLeft: 'clamp(-1.5rem, -4vw, -3rem)' }}>
+              <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.3)', zIndex: 2 }}>
+                <FolderOpen size={24} color="#3b82f6" />
               </div>
-              
-              <Link 
-                href={`/reader?path=${encodeURIComponent(categoryPath.split('/')[0] + '/Syllabus.pdf')}`} 
-                style={{ 
-                  textDecoration: 'none', 
-                  padding: '0.5rem 1rem', 
-                  background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.05))', 
-                  border: '1px solid rgba(239, 68, 68, 0.3)', 
-                  color: '#fca5a5', 
-                  borderRadius: '0.5rem', 
-                  fontSize: '0.85rem', 
-                  fontWeight: 600,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  transition: 'all 0.2s',
-                  boxShadow: '0 4px 15px rgba(239, 68, 68, 0.1)'
-                }}
-                className="hover-syllabus section-syllabus-btn"
-              >
-                <FileText size={16} />
-                Syllabus
-              </Link>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
             </div>
 
             {pdfs.map((pdf, index) => {
