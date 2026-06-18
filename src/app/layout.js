@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Secure PDF Library",
+  title: "Repository.Book",
   description: "A secure, category-based PDF reading platform.",
 };
 
