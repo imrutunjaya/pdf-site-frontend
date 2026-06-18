@@ -70,21 +70,21 @@ function CategoryContent({ params }) {
       }}></div>
 
       {/* Header */}
-      <header style={{ position: 'sticky', top: 0, zIndex: 50, padding: '1.5rem', background: 'rgba(5,5,5,0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500, transition: 'color 0.2s' }} className="hover-white">
+      <header style={{ position: 'sticky', top: 0, zIndex: 50, padding: '1rem', background: 'rgba(5,5,5,0.8)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#9ca3af', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 400, transition: 'color 0.2s' }} className="hover-white">
             <ArrowLeft size={18} />
             Back to Dashboard
           </Link>
         </div>
       </header>
 
-      <main style={{ padding: 'clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem)', flex: 1, position: 'relative', zIndex: 10, width: '100%' }}>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: '3rem' }}>
-          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, margin: '0 0 0.5rem 0', letterSpacing: '-0.02em', background: 'linear-gradient(to right, #fff, #9ca3af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Repo / {categoryName}
+      <main style={{ padding: '1rem clamp(1rem, 3vw, 2rem) 4rem', flex: 1, position: 'relative', zIndex: 10, width: '100%' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 200, margin: '0 0 0.5rem 0', letterSpacing: '-0.02em', color: '#fff' }}>
+            Repo / <span style={{ opacity: 0.8 }}>{categoryName}</span>
           </h1>
-          <p style={{ color: '#6b7280', fontSize: '1.125rem', margin: 0 }}>Access and manage modules in this directory.</p>
+          <p style={{ color: '#6b7280', fontSize: '1rem', margin: 0, fontWeight: 300 }}>Access and manage modules in this directory.</p>
         </motion.div>
 
         {error && (
@@ -113,7 +113,7 @@ function CategoryContent({ params }) {
               <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.3)', zIndex: 2 }}>
                 <FolderOpen size={24} color="#3b82f6" />
               </div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 300, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
             </div>
 
             {pdfs.map((pdf, index) => {
