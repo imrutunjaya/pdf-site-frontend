@@ -52,61 +52,59 @@ const IosSpinner = ({ size = 48, color = '#fff', isSpinning = true }) => {
 
 
 
-const RepoGitGraph = ({ innerRef, style, className }) => (
-  <div ref={innerRef} className={`repo-git-graph ${className || ''}`} style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
+const FloatingBook = ({ innerRef, style, className }) => (
+  <div ref={innerRef} className={`floating-book ${className || ''}`} style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', perspective: '400px', ...style }}>
     
-    {/* SVG Branches */}
-    <svg style={{ position: 'absolute', width: '80px', height: '80px', inset: 0, zIndex: 1, overflow: 'visible' }}>
-      {/* Main branch */}
-      <line x1="40" y1="15" x2="40" y2="65" stroke="#3b82f6" strokeWidth="4" strokeLinecap="round" />
+    <div style={{ position: 'relative', width: '36px', height: '48px', transformStyle: 'preserve-3d', animation: 'book-float 4s ease-in-out infinite' }}>
       
-      {/* Green side branch */}
-      <path d="M 40 25 C 65 25, 65 55, 40 55" fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" />
+      {/* Back Cover */}
+      <div style={{ position: 'absolute', inset: 0, background: '#1e3a8a', borderRadius: '2px 6px 6px 2px', border: '1px solid #3b82f6', transform: 'translateZ(-5px)', boxShadow: '0 15px 25px rgba(59,130,246,0.3)' }}></div>
       
-      {/* Purple side branch */}
-      <path d="M 40 40 C 15 40, 15 65, 40 65" fill="none" stroke="#8b5cf6" strokeWidth="3" strokeLinecap="round" />
-      
-      {/* Animated Flow on Green Branch */}
-      <circle r="3" fill="#fff" filter="drop-shadow(0 0 4px #10b981)">
-        <animateMotion dur="3s" repeatCount="indefinite" path="M 40 25 C 65 25, 65 55, 40 55" />
-      </circle>
+      {/* Spine */}
+      <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '10px', background: '#1d4ed8', transformOrigin: 'left', transform: 'rotateY(-90deg) translateZ(0px) translateX(-5px)', border: '1px solid #3b82f6' }}></div>
 
-      {/* Animated Flow on Purple Branch */}
-      <circle r="3" fill="#fff" filter="drop-shadow(0 0 4px #8b5cf6)">
-        <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite" path="M 40 40 C 15 40, 15 65, 40 65" />
-      </circle>
-      
-      {/* Animated Flow on Main Branch */}
-      <circle r="3" fill="#fff" filter="drop-shadow(0 0 4px #3b82f6)">
-        <animateMotion dur="2s" begin="0.5s" repeatCount="indefinite" path="M 40 15 L 40 65" />
-      </circle>
-    </svg>
+      {/* Pages */}
+      <div style={{ position: 'absolute', top: '2px', bottom: '2px', left: '2px', right: '3px', background: '#fff', borderRadius: '0 4px 4px 0', transform: 'translateZ(-3px)' }}></div>
+      <div style={{ position: 'absolute', top: '2px', bottom: '2px', left: '2px', right: '3px', background: '#e0f2fe', borderRadius: '0 4px 4px 0', transformOrigin: 'left center', transform: 'translateZ(-1px)', animation: 'page-flip 3s ease-in-out infinite' }}></div>
+      <div style={{ position: 'absolute', top: '2px', bottom: '2px', left: '2px', right: '3px', background: '#bae6fd', borderRadius: '0 4px 4px 0', transformOrigin: 'left center', transform: 'translateZ(1px)', animation: 'page-flip-2 3s ease-in-out infinite' }}></div>
 
-    {/* Nodes (Commits) */}
-    {/* Main Top */}
-    <div style={{ position: 'absolute', width: '12px', height: '12px', borderRadius: '50%', background: '#050505', border: '3px solid #3b82f6', left: '50%', top: '15%', transform: 'translate(-50%, -50%)', zIndex: 2 }}></div>
-    {/* Main Middle */}
-    <div style={{ position: 'absolute', width: '12px', height: '12px', borderRadius: '50%', background: '#050505', border: '3px solid #3b82f6', left: '50%', top: '40%', transform: 'translate(-50%, -50%)', zIndex: 2 }}></div>
-    {/* Main Bottom */}
-    <div style={{ position: 'absolute', width: '14px', height: '14px', borderRadius: '50%', background: '#3b82f6', border: '3px solid #fff', left: '50%', top: '65%', transform: 'translate(-50%, -50%)', zIndex: 2, boxShadow: '0 0 15px rgba(59,130,246,0.8)', animation: 'pulse-node 2s infinite' }}></div>
-    
-    {/* Green Node */}
-    <div style={{ position: 'absolute', width: '10px', height: '10px', borderRadius: '50%', background: '#10b981', left: '58.75px', top: '40px', transform: 'translate(-50%, -50%)', zIndex: 2, boxShadow: '0 0 10px rgba(16,185,129,0.8)' }}>
-      <div style={{ position: 'absolute', inset: 0, background: '#10b981', borderRadius: '50%', animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }}></div>
+      {/* Front Cover */}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #2563eb, #1d4ed8)', borderRadius: '2px 6px 6px 2px', border: '1px solid #60a5fa', transformOrigin: 'left center', animation: 'cover-open 3s ease-in-out infinite', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', padding: '6px' }}>
+        <div style={{ width: '14px', height: '2px', background: '#93c5fd', borderRadius: '1px', marginBottom: '4px' }}></div>
+        <div style={{ width: '8px', height: '2px', background: '#93c5fd', borderRadius: '1px' }}></div>
+        
+        {/* Holographic glowing symbol on cover */}
+        <div style={{ marginTop: 'auto', alignSelf: 'center', width: '12px', height: '12px', border: '2px solid #60a5fa', borderRadius: '50%', boxShadow: '0 0 8px #60a5fa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: '4px', height: '4px', background: '#fff', borderRadius: '50%', boxShadow: '0 0 5px #fff' }}></div>
+        </div>
+      </div>
+
     </div>
-    
-    {/* Purple Node */}
-    <div style={{ position: 'absolute', width: '10px', height: '10px', borderRadius: '50%', background: '#8b5cf6', left: '21.25px', top: '52.5px', transform: 'translate(-50%, -50%)', zIndex: 2, boxShadow: '0 0 10px rgba(139,92,246,0.8)' }}>
-      <div style={{ position: 'absolute', inset: 0, background: '#8b5cf6', borderRadius: '50%', animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite 1s' }}></div>
+
+    {/* Orbiting Sync Data (Particles) */}
+    <div style={{ position: 'absolute', width: '70px', height: '70px', borderRadius: '50%', animation: 'spin-orbit 5s linear infinite' }}>
+      <div style={{ position: 'absolute', top: '-2px', left: '50%', width: '4px', height: '4px', background: '#facc15', borderRadius: '50%', boxShadow: '0 0 8px #facc15' }}></div>
+    </div>
+    <div style={{ position: 'absolute', width: '60px', height: '60px', borderRadius: '50%', animation: 'spin-orbit 4s linear infinite reverse' }}>
+      <div style={{ position: 'absolute', bottom: '-2px', left: '30%', width: '4px', height: '4px', background: '#38bdf8', borderRadius: '50%', boxShadow: '0 0 8px #38bdf8' }}></div>
     </div>
 
     <style>{`
-      @keyframes pulse-node {
-        0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px rgba(59,130,246,0.5); }
-        50% { transform: translate(-50%, -50%) scale(1.2); box-shadow: 0 0 20px rgba(59,130,246,1); }
+      @keyframes book-float {
+        0%, 100% { transform: translateY(0px) rotateX(15deg) rotateY(-25deg); }
+        50% { transform: translateY(-8px) rotateX(20deg) rotateY(-15deg); }
       }
-      @keyframes ping {
-        75%, 100% { transform: scale(2.5); opacity: 0; }
+      @keyframes cover-open {
+        0%, 100% { transform: translateZ(5px) rotateY(0deg); }
+        50% { transform: translateZ(5px) rotateY(-35deg); }
+      }
+      @keyframes page-flip {
+        0%, 100% { transform: translateZ(-1px) rotateY(0deg); }
+        50% { transform: translateZ(-1px) rotateY(-20deg); }
+      }
+      @keyframes page-flip-2 {
+        0%, 100% { transform: translateZ(1px) rotateY(0deg); }
+        50% { transform: translateZ(1px) rotateY(-10deg); }
       }
     `}</style>
   </div>
@@ -362,8 +360,8 @@ export default function Home() {
           >
             <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                {/* CSS Repo Git Graph Animation */}
-                <RepoGitGraph style={{ margin: '0 0.5rem' }} />
+                {/* CSS Floating Book Animation */}
+                <FloatingBook style={{ margin: '0 0.5rem' }} />
 
                 <h2 ref={headerTitleRef} style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', opacity: initStage > 0 ? 0 : 1, transition: 'opacity 0.2s', display: 'flex', alignItems: 'flex-end' }}>
                   <div>
@@ -798,7 +796,7 @@ export default function Home() {
           .mobile-actions-toggle { display: flex !important; align-items: center; justify-content: center; }
           .settings-dropdown { left: 0 !important; right: auto !important; width: 260px !important; }
           
-          .repo-git-graph { transform: scale(0.6) !important; margin: 0 !important; width: 60px !important; height: 60px !important; }
+          .floating-book { transform: scale(0.6) !important; margin: 0 !important; width: 60px !important; height: 60px !important; }
           
           .section-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
           .section-header > div { width: 100% !important; }
