@@ -5,13 +5,7 @@ import Link from 'next/link';
 import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const IosSettingsIcon = ({ size = 22, color = 'currentColor' }) => {
-  return (
-    <svg width={size} height={size} viewBox="0 0 512 512" fill={color} xmlns="http://www.w3.org/2000/svg">
-      <path d="M262.29,192.31a66.06,66.06,0,0,0-12.58,0,67.75,67.75,0,0,0-63.53,63.67,65.71,65.71,0,0,0,0,12.58,67.76,67.76,0,0,0,63.53,63.68,66.06,66.06,0,0,0,12.58,0,67.76,67.76,0,0,0,63.53-63.68,65.71,65.71,0,0,0,0-12.58A67.75,67.75,0,0,0,262.29,192.31Zm178.69,21.84,18-31a19,19,0,0,0-6.9-25.9l-43.2-25.4a19,19,0,0,0-25.9,6.7l-15.6,27a149.33,149.33,0,0,0-23.7-13.6l4-31.1A19,19,0,0,0,329,102.21h-50.6a19,19,0,0,0-18.7,15.6l-4,31a149,149,0,0,0-23.6,13.6l-15.6-27a19,19,0,0,0-25.9-6.8L147.49,154a19,19,0,0,0-6.8,25.9l18,31a149,149,0,0,0-13.6,23.6l-31.1-4A19,19,0,0,0,98.39,249.21v50.6a19,19,0,0,0,15.6,18.7l31,4a148.81,148.81,0,0,0,13.6,23.6l-27,15.6a19,19,0,0,0-6.8,25.9l25.4,43.2a19,19,0,0,0,25.9,6.9l31-18a149.33,149.33,0,0,0,23.7,13.6l-4,31.1a19,19,0,0,0,18.7,18.8h50.6a19,19,0,0,0,18.7-15.6l4-31a149,149,0,0,0,23.6-13.6l15.6,27a19,19,0,0,0,25.9,6.8L405.89,401a19,19,0,0,0,6.8-25.9l-18-31a149,149,0,0,0,13.6-23.6l31.1,4a19,19,0,0,0,18.8-18.8V255.11a19,19,0,0,0-15.6-18.7l-31-4A148.81,148.81,0,0,0,440.98,214.15Z" />
-    </svg>
-  );
-};
+
 
 const IosSpinner = ({ size = 48, color = '#fff', isSpinning = true }) => {
   return (
@@ -352,7 +346,7 @@ export default function Home() {
                 {/* CSS Floating Book Animation */}
                 <FloatingBook style={{ margin: '0 0.5rem' }} />
 
-                <h2 ref={headerTitleRef} style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', opacity: initStage > 0 ? 0 : 1, transition: 'opacity 0.2s', display: 'flex', alignItems: 'flex-end' }}>
+                <h2 ref={headerTitleRef} style={{ fontSize: 'clamp(1.2rem, 4vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1.1, whiteSpace: 'normal', opacity: initStage > 0 ? 0 : 1, transition: 'opacity 0.2s', display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
                   <div>
                     <span style={{ fontWeight: 600 }}>Repository</span><span style={{ opacity: 0.8 }}>.Book</span>
                   </div>
@@ -409,7 +403,7 @@ export default function Home() {
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#9ca3af', cursor: 'pointer', padding: '0.6rem', borderRadius: '50%', transition: 'all 0.2s' }}
                   className="hover-white hover-bg"
                 >
-                  <IosSettingsIcon size={20} />
+                  <Settings size={20} />
                 </button>
                 
                 <AnimatePresence>
@@ -494,28 +488,33 @@ export default function Home() {
                       </div>
 
                       {/* Section Syllabus Button */}
-                      <Link 
-                        href={`/reader?path=${encodeURIComponent(section.sectionName + '/Syllabus.pdf')}`} 
-                        style={{ 
-                          textDecoration: 'none', 
-                          padding: '0.5rem 1rem', 
-                          background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.05))', 
-                          border: '1px solid rgba(239, 68, 68, 0.3)', 
-                          color: '#fca5a5', 
-                          borderRadius: '0.5rem', 
-                          fontSize: '0.85rem', 
-                          fontWeight: 600,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          transition: 'all 0.2s',
-                          boxShadow: '0 4px 15px rgba(239, 68, 68, 0.1)'
-                        }}
-                        className="hover-syllabus section-syllabus-btn"
-                      >
-                        <FileText size={16} />
-                        Syllabus
-                      </Link>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }} className="syllabus-container">
+                        <Link 
+                          href={`/reader?path=${encodeURIComponent(section.sectionName + '/Syllabus.pdf')}`} 
+                          style={{ 
+                            textDecoration: 'none', 
+                            padding: '0.5rem 1rem', 
+                            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.05))', 
+                            border: '1px solid rgba(239, 68, 68, 0.3)', 
+                            color: '#fca5a5', 
+                            borderRadius: '0.5rem', 
+                            fontSize: '0.85rem', 
+                            fontWeight: 600,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 4px 15px rgba(239, 68, 68, 0.1)'
+                          }}
+                          className="hover-syllabus section-syllabus-btn"
+                        >
+                          <FileText size={16} />
+                          Syllabus
+                        </Link>
+                        <span style={{ fontSize: '0.7rem', color: '#6b7280', fontFamily: 'monospace', textAlign: 'right' }}>
+                          Upload <b>Syllabus.pdf</b> in /{section.sectionName}
+                        </span>
+                      </div>
                     </div>
 
                     <div style={{
@@ -776,7 +775,7 @@ export default function Home() {
 
         @media (max-width: 768px) {
           .main-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
-          .header-left { width: 100% !important; justify-content: space-between !important; }
+          .header-left { width: 100% !important; justify-content: space-between !important; flex-wrap: wrap !important; }
           .header-right { width: 100% !important; justify-content: space-between !important; gap: 0.5rem !important; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem; flex-wrap: nowrap !important; }
           .search-wrapper { flex: 1 !important; }
           .search-input { width: 100% !important; max-width: none !important; }
@@ -789,7 +788,8 @@ export default function Home() {
           
           .section-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
           .section-header > div { width: 100% !important; }
-          .section-syllabus-btn { align-self: flex-start !important; width: 100% !important; justify-content: center !important; }
+          .syllabus-container { width: 100% !important; align-items: flex-start !important; }
+          .section-syllabus-btn { width: 100% !important; justify-content: center !important; }
           
           .category-card { flex-direction: column !important; align-items: flex-start !important; padding: 1rem !important; gap: 1rem !important; }
           .category-link { width: 100% !important; gap: 1rem !important; }
