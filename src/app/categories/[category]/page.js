@@ -79,7 +79,7 @@ function CategoryContent({ params }) {
         </div>
       </header>
 
-      <main style={{ padding: 'clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem)', flex: 1, position: 'relative', zIndex: 10, maxWidth: '1000px', margin: '0 auto', width: '100%' }}>
+      <main style={{ padding: 'clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem)', flex: 1, position: 'relative', zIndex: 10, width: '100%' }}>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} style={{ marginBottom: '3rem' }}>
           <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 800, margin: '0 0 0.5rem 0', letterSpacing: '-0.02em', background: 'linear-gradient(to right, #fff, #9ca3af)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Repo / {categoryName}
@@ -115,6 +115,35 @@ function CategoryContent({ params }) {
               </div>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
             </div>
+
+            {/* Syllabus Node */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0, type: 'spring', stiffness: 200, damping: 20 }}
+              style={{ position: 'relative', paddingLeft: 'clamp(1rem, 4vw, 2.5rem)', marginBottom: '1.5rem' }}
+            >
+              {/* Horizontal Tree Branch Line */}
+              <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', left: 'clamp(-1.5rem, -4vw, -3rem)', width: 'clamp(2.5rem, 8vw, 5.5rem)', height: '2px', background: 'rgba(59,130,246,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '50%', background: '#050505', border: '2px solid rgba(239,68,68,0.6)', color: '#fca5a5', fontSize: '0.75rem', fontWeight: 700, zIndex: 3 }}>
+                  <FileText size={12} />
+                </div>
+              </div>
+              
+              <Link href={`/reader?path=${encodeURIComponent(categoryPath.split('/')[0] + '/Syllabus.pdf')}`} style={{ textDecoration: 'none' }}>
+                <div className="hover-syllabus-bg" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1.25rem 1.5rem', background: 'rgba(239,68,68,0.05)', borderRadius: '0.75rem', border: '1px solid rgba(239,68,68,0.2)', transition: 'background 0.2s, transform 0.2s', position: 'relative', zIndex: 2 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 200px' }}>
+                    <FileText size={24} color="#fca5a5" style={{ flexShrink: 0 }} />
+                    <span style={{ fontSize: '1.125rem', fontWeight: 500, color: '#fca5a5', wordBreak: 'break-word', lineHeight: 1.4 }}>{categoryPath.split('/')[0]} Syllabus</span>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', justifyContent: 'flex-end', width: '100%', '@media (min-width: 600px)': { width: 'auto' } }}>
+                    <span style={{ color: '#fca5a5', fontSize: '0.85rem', fontFamily: 'monospace', background: 'rgba(239,68,68,0.1)', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>
+                      View Syllabus
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
 
             {pdfs.map((pdf, index) => {
               const pdfUrl = `/api/pdf-content?path=${encodeURIComponent(pdf.path)}`;
@@ -173,6 +202,7 @@ function CategoryContent({ params }) {
         .hover-white-bg:hover { background: rgba(255,255,255,0.1) !important; }
         .hover-primary-bg:hover { background: #2563eb !important; }
         .hover-red-bg:hover { background: rgba(239,68,68,0.2) !important; }
+        .hover-syllabus-bg:hover { background: rgba(239,68,68,0.1) !important; border-color: rgba(239,68,68,0.4) !important; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(239,68,68,0.1); }
         
         /* Mobile specific adjustments inside style block for layout safety */
         @media (max-width: 600px) {

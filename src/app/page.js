@@ -486,35 +486,6 @@ export default function Home() {
                         </h2>
                         <p style={{ margin: 0, fontSize: '0.9rem', color: '#9ca3af' }}>Explore all directories and files under {section.sectionName.toLowerCase()}.</p>
                       </div>
-
-                      {/* Section Syllabus Button */}
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }} className="syllabus-container">
-                        <Link 
-                          href={`/reader?path=${encodeURIComponent(section.sectionName + '/Syllabus.pdf')}`} 
-                          style={{ 
-                            textDecoration: 'none', 
-                            padding: '0.5rem 1rem', 
-                            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(220, 38, 38, 0.05))', 
-                            border: '1px solid rgba(239, 68, 68, 0.3)', 
-                            color: '#fca5a5', 
-                            borderRadius: '0.5rem', 
-                            fontSize: '0.85rem', 
-                            fontWeight: 600,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            transition: 'all 0.2s',
-                            boxShadow: '0 4px 15px rgba(239, 68, 68, 0.1)'
-                          }}
-                          className="hover-syllabus section-syllabus-btn"
-                        >
-                          <FileText size={16} />
-                          Syllabus
-                        </Link>
-                        <span style={{ fontSize: '0.7rem', color: '#6b7280', fontFamily: 'monospace', textAlign: 'right' }}>
-                          Upload <b>Syllabus.pdf</b> in /{section.sectionName}
-                        </span>
-                      </div>
                     </div>
 
                     <div style={{
@@ -596,6 +567,71 @@ export default function Home() {
                           </motion.div>
                         </div>
                       ))}
+
+                      {/* Syllabus Node */}
+                      <div className="flowchart-node-wrapper" key="syllabus" style={{ 
+                        display: 'flex', flexDirection: 'column', 
+                        alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
+                        width: '100%',
+                        position: 'relative',
+                        paddingLeft: viewMode === 'flowchart-left' ? '5rem' : '0',
+                        marginBottom: viewMode === 'flowchart-left' ? '1rem' : '0'
+                      }}>
+                        
+                        {/* Horizontal Tree Branch Line (Only for flowchart-left) */}
+                        {viewMode === 'flowchart-left' && (
+                          <div className="horizontal-branch" style={{ position: 'absolute', top: '50%', left: '2.5rem', width: '2.5rem', height: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1, transform: 'translateY(-50%)' }}></div>
+                        )}
+
+                        {/* Center Flowchart Connectors */}
+                        {viewMode === 'flowchart-center' && (
+                          <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)' }}></div>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.1)', border: '2px solid rgba(239, 68, 68, 0.3)', color: '#fca5a5', fontSize: '1rem', fontWeight: 700 }}>
+                              <FileText size={14} />
+                            </div>
+                            <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)', position: 'relative' }}>
+                              <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(255,255,255,0.2)' }}></div>
+                            </div>
+                          </motion.div>
+                        )}
+
+                        {/* Node Card */}
+                        <motion.div variants={itemVariants} style={{ width: '100%', marginBottom: (viewMode === 'list' || viewMode === 'grid') ? '1rem' : '0' }}>
+                          <motion.div 
+                            className="category-card hover-syllabus-card"
+                            whileHover={{ scale: 1.02, backgroundColor: 'rgba(239,68,68,0.05)' }}
+                            transition={{ duration: 0.2 }}
+                            style={{ 
+                              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                              padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.02)', 
+                              borderRadius: '1rem', border: '1px solid rgba(255,255,255,0.1)',
+                              borderLeft: '4px solid #ef4444',
+                              boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                              position: 'relative'
+                            }}
+                          >
+                            <Link className="category-link" href={`/reader?path=${encodeURIComponent(section.sectionName + '/Syllabus.pdf')}`} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+                              {(viewMode === 'list' || viewMode === 'grid') && (
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(239,68,68,0.1)', color: '#fca5a5', fontSize: '0.8rem', fontWeight: 700 }}>
+                                  <FileText size={14} />
+                                </div>
+                              )}
+                              <div style={{ background: 'rgba(239,68,68,0.1)', padding: '0.75rem', borderRadius: '0.75rem' }}>
+                                <FileText size={24} color="#fca5a5" />
+                              </div>
+                              <div>
+                                <h3 style={{ fontSize: '1.125rem', fontWeight: 500, margin: '0 0 0.25rem 0', color: '#fff' }}>Syllabus</h3>
+                                <p style={{ fontSize: '0.85rem', color: '#9ca3af', margin: '0 0 0.5rem 0', lineHeight: 1.4 }}>
+                                  View the complete syllabus for {section.sectionName}.
+                                </p>
+                                <span style={{ fontSize: '0.75rem', color: '#6b7280', fontFamily: 'monospace' }}>/{section.sectionName}/Syllabus.pdf</span>
+                              </div>
+                            </Link>
+                          </motion.div>
+                        </motion.div>
+                      </div>
+
                     </div>
                   </motion.div>
                 ))}
