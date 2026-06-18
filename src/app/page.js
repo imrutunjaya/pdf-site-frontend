@@ -5,21 +5,10 @@ import Link from 'next/link';
 import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const IosSettingsIcon = ({ size = 20, color = 'currentColor' }) => {
+const IosSettingsIcon = ({ size = 22, color = 'currentColor' }) => {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill={color} xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <mask id="hole">
-          <rect width="100" height="100" fill="white" />
-          <circle cx="50" cy="50" r="22" fill="black" />
-        </mask>
-      </defs>
-      <g mask="url(#hole)">
-        <circle cx="50" cy="50" r="38" />
-        {[...Array(18)].map((_, i) => (
-          <rect key={i} x="44" y="0" width="12" height="100" rx="3" transform={`rotate(${i * 20} 50 50)`} />
-        ))}
-      </g>
+    <svg width={size} height={size} viewBox="0 0 512 512" fill={color} xmlns="http://www.w3.org/2000/svg">
+      <path d="M262.29,192.31a66.06,66.06,0,0,0-12.58,0,67.75,67.75,0,0,0-63.53,63.67,65.71,65.71,0,0,0,0,12.58,67.76,67.76,0,0,0,63.53,63.68,66.06,66.06,0,0,0,12.58,0,67.76,67.76,0,0,0,63.53-63.68,65.71,65.71,0,0,0,0-12.58A67.75,67.75,0,0,0,262.29,192.31Zm178.69,21.84,18-31a19,19,0,0,0-6.9-25.9l-43.2-25.4a19,19,0,0,0-25.9,6.7l-15.6,27a149.33,149.33,0,0,0-23.7-13.6l4-31.1A19,19,0,0,0,329,102.21h-50.6a19,19,0,0,0-18.7,15.6l-4,31a149,149,0,0,0-23.6,13.6l-15.6-27a19,19,0,0,0-25.9-6.8L147.49,154a19,19,0,0,0-6.8,25.9l18,31a149,149,0,0,0-13.6,23.6l-31.1-4A19,19,0,0,0,98.39,249.21v50.6a19,19,0,0,0,15.6,18.7l31,4a148.81,148.81,0,0,0,13.6,23.6l-27,15.6a19,19,0,0,0-6.8,25.9l25.4,43.2a19,19,0,0,0,25.9,6.9l31-18a149.33,149.33,0,0,0,23.7,13.6l-4,31.1a19,19,0,0,0,18.7,18.8h50.6a19,19,0,0,0,18.7-15.6l4-31a149,149,0,0,0,23.6-13.6l15.6,27a19,19,0,0,0,25.9,6.8L405.89,401a19,19,0,0,0,6.8-25.9l-18-31a149,149,0,0,0,13.6-23.6l31.1,4a19,19,0,0,0,18.8-18.8V255.11a19,19,0,0,0-15.6-18.7l-31-4A148.81,148.81,0,0,0,440.98,214.15Z" />
     </svg>
   );
 };
