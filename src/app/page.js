@@ -52,27 +52,33 @@ const IosSpinner = ({ size = 48, color = '#fff', isSpinning = true }) => {
 
 
 
-const SolarSystem = ({ innerRef, style, className }) => (
-  <div ref={innerRef} className={`solar-system ${className || ''}`} style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
-    {/* Sun */}
+const DataCore = ({ innerRef, style, className }) => (
+  <div ref={innerRef} className={`data-core ${className || ''}`} style={{ position: 'relative', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center', ...style }}>
+    {/* Core */}
     <div style={{
-      width: '26px', height: '26px', borderRadius: '50%',
-      background: 'radial-gradient(circle at 30% 30%, #fef08a, #f59e0b)',
-      boxShadow: '0 0 20px rgba(245, 158, 11, 0.4), inset -4px -4px 8px rgba(217, 119, 6, 0.8)',
-      position: 'relative', zIndex: 10
+      width: '24px', height: '24px', borderRadius: '50%',
+      background: 'radial-gradient(circle at 30% 30%, #93c5fd, #3b82f6)',
+      boxShadow: '0 0 20px rgba(59, 130, 246, 0.8), inset -2px -2px 6px rgba(29, 78, 216, 0.8)',
+      position: 'relative', zIndex: 10,
+      animation: 'pulse-core 2s ease-in-out infinite alternate'
     }}></div>
-    {/* Orbit 1 */}
-    <div style={{ position: 'absolute', width: '45px', height: '45px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 4s linear infinite' }}>
-      <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: '#9ca3af', boxShadow: '0 0 4px rgba(156,163,175,0.8)' }}></div>
+    {/* Inner Ring (X-Axis) */}
+    <div style={{ position: 'absolute', width: '45px', height: '45px', borderRadius: '50%', border: '2px solid rgba(96,165,250,0.2)', animation: 'spin-orbit 3s linear infinite', borderTopColor: '#60a5fa' }}>
     </div>
-    {/* Orbit 2 */}
-    <div style={{ position: 'absolute', width: '65px', height: '65px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', animation: 'spin-orbit 8s linear infinite' }}>
-      <div style={{ position: 'absolute', top: '-4px', left: '50%', marginLeft: '-4px', width: '8px', height: '8px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8)', boxShadow: '0 0 6px rgba(59,130,246,0.6)' }}></div>
+    {/* Middle Ring (Y-Axis) */}
+    <div style={{ position: 'absolute', width: '65px', height: '65px', borderRadius: '50%', border: '1px dashed rgba(96,165,250,0.3)', animation: 'spin-orbit 7s linear infinite reverse' }}>
+      <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: '#60a5fa', boxShadow: '0 0 10px rgba(96,165,250,1)' }}></div>
     </div>
-    {/* Orbit 3 */}
-    <div style={{ position: 'absolute', width: '85px', height: '85px', borderRadius: '50%', border: '1px dashed rgba(255,255,255,0.05)', animation: 'spin-orbit 14s linear infinite' }}>
-      <div style={{ position: 'absolute', top: '-3px', left: '50%', marginLeft: '-3px', width: '6px', height: '6px', borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, #fca5a5, #b91c1c)', boxShadow: '0 0 6px rgba(239,68,68,0.6)' }}></div>
+    {/* Outer Ring */}
+    <div style={{ position: 'absolute', width: '85px', height: '85px', borderRadius: '50%', border: '1px solid rgba(96,165,250,0.1)', animation: 'spin-orbit 15s linear infinite', borderLeftColor: '#3b82f6', borderRightColor: 'transparent' }}>
+       <div style={{ position: 'absolute', bottom: '12%', left: '12%', width: '5px', height: '5px', borderRadius: '50%', background: '#93c5fd', boxShadow: '0 0 8px rgba(147,197,253,0.8)' }}></div>
     </div>
+    <style>{`
+      @keyframes pulse-core {
+        0% { transform: scale(0.95); box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+        100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(59, 130, 246, 1), 0 0 40px rgba(59, 130, 246, 0.4); }
+      }
+    `}</style>
   </div>
 );
 
@@ -326,8 +332,8 @@ export default function Home() {
           >
             <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                {/* CSS Solar System */}
-                <SolarSystem style={{ margin: '0 0.5rem' }} />
+                {/* CSS Data Core Animation */}
+                <DataCore style={{ margin: '0 0.5rem' }} />
 
                 <h2 ref={headerTitleRef} style={{ fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', fontWeight: 100, margin: 0, letterSpacing: '-1px', lineHeight: 1, whiteSpace: 'nowrap', opacity: initStage > 0 ? 0 : 1, transition: 'opacity 0.2s', display: 'flex', alignItems: 'flex-end' }}>
                   <div>
@@ -762,7 +768,7 @@ export default function Home() {
           .mobile-actions-toggle { display: flex !important; align-items: center; justify-content: center; }
           .settings-dropdown { left: 0 !important; right: auto !important; width: 260px !important; }
           
-          .solar-system { transform: scale(0.6) !important; margin: 0 !important; width: 60px !important; height: 60px !important; }
+          .data-core { transform: scale(0.6) !important; margin: 0 !important; width: 60px !important; height: 60px !important; }
           
           .section-header { flex-direction: column !important; align-items: flex-start !important; gap: 1rem !important; }
           .section-header > div { width: 100% !important; }
