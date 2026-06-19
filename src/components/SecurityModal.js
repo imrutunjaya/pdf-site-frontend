@@ -6,7 +6,7 @@ export default function SecurityModal({ isOpen, onClose, categories }) {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [files, setFiles] = useState([]);
   const [loadingFiles, setLoadingFiles] = useState(false);
-  const [password, setPassword] = useState('Sanu@2001');
+  const [password, setPassword] = useState('');
   const [actioning, setActioning] = useState(null); // path of file being actioned
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');

@@ -25,7 +25,7 @@ export default function PdfReaderPage({ searchParams }) {
   
   const [pdfData, setPdfData] = useState(null);
   const [isEncrypted, setIsEncrypted] = useState(false);
-  const [password, setPassword] = useState('Sanu@2001');
+  const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   
