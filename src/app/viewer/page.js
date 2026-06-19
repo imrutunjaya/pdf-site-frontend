@@ -23,26 +23,27 @@ export default function ViewerPage({ searchParams }) {
   useEffect(() => {
     if (!path) return;
 
-    if (isText) {
-      // Fetch text content directly to display
-      fetch(fileUrl)
-        .then(res => {
-          if (!res.ok) throw new Error('Failed to load file');
-          return res.text();
-        })
-        .then(text => {
-          setContent(text);
-          setLoading(false);
-        })
-        .catch(err => {
-          setError(err.message);
-          setLoading(false);
-        });
-    } else {
-      // For images and office files, we don't need to fetch text
-      setLoading(false);
-    }
-  }, [path, fileUrl, isText]);
+    fetch(fileUrl)
+      .then(async res => {
+        if (res.status === 403) {
+          throw new Error("Files are encrypted Contact @Mrutunjaya");
+        }
+        if (!res.ok) throw new Error('Failed to load file');
+
+        if (isText) {
+          return res.text().then(text => setContent(text));
+        } else if (isImage) {
+          return res.blob().then(blob => setContent(URL.createObjectURL(blob)));
+        } else {
+          setContent(fileUrl);
+        }
+      })
+      .then(() => setLoading(false))
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [path, fileUrl, isText, isImage]);
 
   if (!path) {
     return (
@@ -94,10 +95,10 @@ export default function ViewerPage({ searchParams }) {
             <AlertCircle size={48} />
             <p>{error}</p>
           </div>
-        ) : isImage ? (
+        ) : isImage && content ? (
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', width: '100%', height: '100%' }}>
             <img 
-              src={fileUrl} 
+              src={content} 
               alt={fileName} 
               style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', background: '#fff', padding: '1rem', borderRadius: '0.5rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }} 
             />

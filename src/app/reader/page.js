@@ -198,8 +198,8 @@ export default function PdfReaderPage({ searchParams }) {
           <div style={{ width: '64px', height: '64px', background: 'rgba(239,68,68,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#ef4444' }}>
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           </div>
-          <h2 style={{ margin: '0 0 1rem 0' }}>Encrypted File</h2>
-          <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginBottom: '2rem' }}>This file is protected. Please enter the password to view it.</p>
+          <h2 style={{ margin: '0 0 1rem 0' }}>Files are encrypted</h2>
+          <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginBottom: '2rem' }}>Contact @Mrutunjaya for access or enter password below.</p>
           <form onSubmit={(e) => { e.preventDefault(); fetchPdf(password); }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <input 
               type="password" 
