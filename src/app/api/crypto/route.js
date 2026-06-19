@@ -2,6 +2,75 @@ import { NextResponse } from 'next/server';
 import { octokit, GITHUB_OWNER, GITHUB_REPO } from '@/lib/github';
 import { encryptBuffer, decryptBuffer, isEncrypted } from '@/lib/crypto';
 
+// Recursive function to process files and folders
+async function processPath(targetPath, password, action) {
+  let processedCount = 0;
+  let skippedCount = 0;
+
+  const { data: nodeData } = await octokit.rest.repos.getContent({
+    owner: GITHUB_OWNER,
+    repo: GITHUB_REPO,
+    path: targetPath,
+  });
+
+  if (Array.isArray(nodeData)) {
+    // It's a directory, process all items inside recursively
+    for (const item of nodeData) {
+      const result = await processPath(item.path, password, action);
+      processedCount += result.processedCount;
+      skippedCount += result.skippedCount;
+    }
+  } else if (nodeData.type === 'file') {
+    // It's a file, process it
+    const fileResponse = await fetch(nodeData.download_url, {
+      headers: { Authorization: `token ${process.env.GITHUB_PAT}` },
+    });
+
+    if (!fileResponse.ok) {
+      throw new Error(`Failed to download ${nodeData.name}`);
+    }
+
+    const arrayBuffer = await fileResponse.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    let newBuffer;
+    let commitMessage;
+
+    if (action === 'encrypt') {
+      if (isEncrypted(buffer)) {
+        // Skip already encrypted
+        return { processedCount: 0, skippedCount: 1 };
+      }
+      newBuffer = encryptBuffer(buffer, password);
+      commitMessage = `🔒 Encrypt ${nodeData.name}`;
+    } else {
+      if (!isEncrypted(buffer)) {
+        // Skip not encrypted
+        return { processedCount: 0, skippedCount: 1 };
+      }
+      try {
+        newBuffer = decryptBuffer(buffer, password);
+      } catch (err) {
+        throw new Error(`Incorrect password or corrupted file: ${nodeData.name}`);
+      }
+      commitMessage = `🔓 Decrypt ${nodeData.name}`;
+    }
+
+    await octokit.rest.repos.createOrUpdateFileContents({
+      owner: GITHUB_OWNER,
+      repo: GITHUB_REPO,
+      path: targetPath,
+      message: commitMessage,
+      content: newBuffer.toString('base64'),
+      sha: nodeData.sha,
+    });
+
+    processedCount++;
+  }
+
+  return { processedCount, skippedCount };
+}
+
 export async function POST(request) {
   try {
     const { path, password, action } = await request.json();
@@ -14,62 +83,16 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
 
-    // 1. Fetch file info to get the sha (needed for update) and download URL
-    const { data: fileData } = await octokit.rest.repos.getContent({
-      owner: GITHUB_OWNER,
-      repo: GITHUB_REPO,
-      path: path,
-    });
+    const result = await processPath(path, password, action);
 
-    if (Array.isArray(fileData) || fileData.type !== 'file') {
-      return NextResponse.json({ error: 'Path is not a file' }, { status: 400 });
+    if (result.processedCount === 0 && result.skippedCount > 0) {
+       return NextResponse.json({ error: `All items were already ${action === 'encrypt' ? 'encrypted' : 'decrypted'}.` }, { status: 400 });
     }
 
-    // 2. Download the actual file buffer
-    const fileResponse = await fetch(fileData.download_url, {
-      headers: { Authorization: `token ${process.env.GITHUB_PAT}` },
+    return NextResponse.json({ 
+      success: true, 
+      message: `Successfully ${action}ed ${result.processedCount} file(s).` 
     });
-
-    if (!fileResponse.ok) {
-      throw new Error('Failed to download file content from GitHub');
-    }
-
-    const arrayBuffer = await fileResponse.arrayBuffer();
-    let buffer = Buffer.from(arrayBuffer);
-
-    // 3. Process the buffer
-    let newBuffer;
-    let commitMessage;
-
-    if (action === 'encrypt') {
-      if (isEncrypted(buffer)) {
-        return NextResponse.json({ error: 'File is already encrypted' }, { status: 400 });
-      }
-      newBuffer = encryptBuffer(buffer, password);
-      commitMessage = `🔒 Encrypt ${fileData.name}`;
-    } else {
-      if (!isEncrypted(buffer)) {
-        return NextResponse.json({ error: 'File is not encrypted' }, { status: 400 });
-      }
-      try {
-        newBuffer = decryptBuffer(buffer, password);
-      } catch (err) {
-        return NextResponse.json({ error: 'Incorrect password or corrupted file' }, { status: 401 });
-      }
-      commitMessage = `🔓 Decrypt ${fileData.name}`;
-    }
-
-    // 4. Update the file on GitHub
-    await octokit.rest.repos.createOrUpdateFileContents({
-      owner: GITHUB_OWNER,
-      repo: GITHUB_REPO,
-      path: path,
-      message: commitMessage,
-      content: newBuffer.toString('base64'),
-      sha: fileData.sha,
-    });
-
-    return NextResponse.json({ success: true, message: `File successfully ${action}ed` });
 
   } catch (error) {
     console.error('Crypto API Error:', error);

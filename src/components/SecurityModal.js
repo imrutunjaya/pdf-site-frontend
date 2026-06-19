@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { X, Lock, Unlock, FileText, ChevronRight, Loader2 } from 'lucide-react';
+import { X, Lock, Unlock, FileText, ChevronRight, Loader2, FolderOpen } from 'lucide-react';
 
 export default function SecurityModal({ isOpen, onClose, categories }) {
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -113,12 +113,14 @@ export default function SecurityModal({ isOpen, onClose, categories }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#9ca3af' }}><Loader2 className="animate-spin" size={16} /> Loading files...</div>
               ) : files.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {files.map(file => (
-                    <div key={file.path} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0.5rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden' }}>
-                        <FileText size={18} color="#9ca3af" style={{ flexShrink: 0 }} />
-                        <span style={{ color: '#d1d5db', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={file.name}>{file.name}</span>
-                      </div>
+                  {files.map(file => {
+                    const isDir = file.type === 'dir';
+                    return (
+                      <div key={file.path} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', overflow: 'hidden' }}>
+                          {isDir ? <FolderOpen size={18} color="#3b82f6" style={{ flexShrink: 0 }} /> : <FileText size={18} color="#9ca3af" style={{ flexShrink: 0 }} />}
+                          <span style={{ color: '#d1d5db', fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={file.name}>{file.name}</span>
+                        </div>
                       <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
                         <button 
                           onClick={() => handleAction(file.path, 'encrypt')}
@@ -135,8 +137,8 @@ export default function SecurityModal({ isOpen, onClose, categories }) {
                           {actioning === file.path ? <Loader2 size={12} className="animate-spin" /> : <Unlock size={12} />} Decrypt
                         </button>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>No files found in this category.</p>
