@@ -3,7 +3,7 @@
 import { useEffect, useState, use, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { FileText, ArrowLeft, Loader2, AlertCircle, Eye, Download, FolderOpen, AlertTriangle } from 'lucide-react';
+import { FileText, ArrowLeft, Loader2, AlertCircle, Eye, Download, FolderOpen, AlertTriangle, Upload, Image as ImageIcon, FileCode } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function CategoryContent({ params }) {
@@ -12,8 +12,9 @@ function CategoryContent({ params }) {
   const categoryName = decodeURIComponent(resolvedParams.category);
   const categoryPath = searchParams.get('path') || categoryName;
   
-  const [pdfs, setPdfs] = useState([]);
+  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
@@ -23,23 +24,59 @@ function CategoryContent({ params }) {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  useEffect(() => {
-    async function fetchPdfs() {
-      try {
-        const res = await fetch(`/api/pdfs?category=${encodeURIComponent(categoryPath)}`);
-        const data = await res.json();
-        
-        if (!res.ok) throw new Error(data.error || 'Failed to fetch');
-        
-        setPdfs(data.pdfs || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  const fetchFiles = async () => {
+    try {
+      const res = await fetch(`/api/pdfs?category=${encodeURIComponent(categoryPath)}`);
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch');
+      
+      setFiles(data.pdfs || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    fetchPdfs();
+  };
+
+  useEffect(() => {
+    fetchFiles();
   }, [categoryPath]);
+
+  const handleUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError(null);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        const base64Content = event.target.result.split(',')[1];
+        
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            path: `${categoryPath}/${file.name}`,
+            content: base64Content,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        
+        // Refresh files list
+        fetchFiles();
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#050505', color: '#fff', fontFamily: 'sans-serif', position: 'relative', overflowX: 'hidden' }}>
@@ -98,32 +135,53 @@ function CategoryContent({ params }) {
           <div style={{ display: 'flex', justifyContent: 'center', padding: '4rem' }}>
             <Loader2 className="animate-spin" size={48} color="#3b82f6" />
           </div>
-        ) : pdfs.length === 0 && !error ? (
+        ) : files.length === 0 && !error ? (
           <div style={{ textAlign: 'center', padding: '5rem 2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '1rem', border: '1px dashed rgba(255,255,255,0.1)' }}>
             <FolderOpen size={64} color="#4b5563" style={{ margin: '0 auto 1.5rem', opacity: 0.5 }} />
             <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.5rem 0' }}>Directory is Empty</h3>
-            <p style={{ color: '#6b7280', margin: 0 }}>Upload PDF modules to this folder in your repository.</p>
+            <p style={{ color: '#6b7280', margin: 0 }}>Upload files to this folder in your repository.</p>
           </div>
         ) : (
           <div style={{ position: 'relative', paddingLeft: 'clamp(1.5rem, 4vw, 3rem)' }}>
             {/* Vertical Tree Branch Line */}
             <div style={{ position: 'absolute', top: '1.5rem', bottom: '2rem', left: '0', width: '2px', background: 'linear-gradient(to bottom, rgba(59,130,246,0.5), transparent)' }}></div>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', marginLeft: 'clamp(-1.5rem, -4vw, -3rem)' }}>
-              <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.3)', zIndex: 2 }}>
-                <FolderOpen size={24} color="#3b82f6" />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', marginLeft: 'clamp(-1.5rem, -4vw, -3rem)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.3)', zIndex: 2 }}>
+                  <FolderOpen size={24} color="#3b82f6" />
+                </div>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 300, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
               </div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 300, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
+              
+              <div style={{ zIndex: 2 }}>
+                <input type="file" id="file-upload" style={{ display: 'none' }} onChange={handleUpload} disabled={uploading} />
+                <label htmlFor="file-upload" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#3b82f6', color: '#fff', padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.7 : 1, transition: 'background 0.2s', fontWeight: 500, fontSize: '0.9rem' }} className="hover-primary-bg">
+                  {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                  {uploading ? 'Uploading...' : 'Upload File'}
+                </label>
+              </div>
             </div>
 
-            {pdfs.map((pdf, index) => {
-              const pdfUrl = `/api/pdf-content?path=${encodeURIComponent(pdf.path)}`;
+            {files.map((file, index) => {
+              const fileUrl = `/api/pdf-content?path=${encodeURIComponent(file.path)}`;
+              const isPdf = file.name.toLowerCase().endsWith('.pdf');
+              const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(file.name);
+              const isCode = /\.(js|jsx|ts|tsx|json|html|css|py|java|c|cpp)$/i.test(file.name);
+              
+              let FileIcon = FileText;
+              let iconColor = "#9ca3af";
+              
+              if (isPdf) { FileIcon = FileText; iconColor = "#ef4444"; }
+              else if (isImage) { FileIcon = ImageIcon; iconColor = "#10b981"; }
+              else if (isCode) { FileIcon = FileCode; iconColor = "#f59e0b"; }
+
               return (
                 <motion.div 
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1, type: 'spring', stiffness: 200, damping: 20 }}
-                  key={pdf.path} 
+                  key={file.path} 
                   style={{ position: 'relative', paddingLeft: 'clamp(1rem, 4vw, 2.5rem)', marginBottom: '1.5rem' }}
                 >
                   {/* Horizontal Tree Branch Line & Number */}
@@ -136,26 +194,32 @@ function CategoryContent({ params }) {
                   <div className="hover-bg" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '1.25rem 1.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '0.75rem', border: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s', position: 'relative', zIndex: 2 }}>
                     
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 200px' }}>
-                      <FileText size={24} color="#ef4444" style={{ flexShrink: 0 }} />
-                      <span style={{ fontSize: '1.125rem', fontWeight: 500, color: '#e5e7eb', wordBreak: 'break-word', lineHeight: 1.4 }}>{pdf.name.replace('.pdf', '')}</span>
+                      <FileIcon size={24} color={iconColor} style={{ flexShrink: 0 }} />
+                      <span style={{ fontSize: '1.125rem', fontWeight: 500, color: '#e5e7eb', wordBreak: 'break-word', lineHeight: 1.4 }}>{file.name}</span>
                     </div>
                     
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', justifyContent: 'flex-end', width: '100%', '@media (min-width: 600px)': { width: 'auto' } }}>
                       <span style={{ color: '#6b7280', fontSize: '0.85rem', fontFamily: 'monospace', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>
-                        {(pdf.size / 1024 / 1024).toFixed(2)} MB
+                        {(file.size / 1024 / 1024).toFixed(2)} MB
                       </span>
                       
                       <div style={{ display: 'flex', gap: '0.5rem', width: '100%', justifyContent: 'flex-end' }}>
                         {/* Report Button */}
-                        <a href={`mailto:pradhanmrutunjaya73@gmail.com?subject=Broken PDF Report: ${encodeURIComponent(pdf.name)}`} title="Report Broken PDF" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-red-bg">
+                        <a href={`mailto:pradhanmrutunjaya73@gmail.com?subject=Broken File Report: ${encodeURIComponent(file.name)}`} title="Report Broken File" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-red-bg">
                           <AlertTriangle size={18} />
                         </a>
-                        <a href={pdfUrl} download={pdf.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-white-bg">
+                        <a href={fileUrl} download={file.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-white-bg">
                           <Download size={18} />
                         </a>
-                        <Link href={`/reader?path=${encodeURIComponent(pdf.path)}`} style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
-                          <Eye size={18} /> Read
-                        </Link>
+                        {isPdf ? (
+                          <Link href={`/reader?path=${encodeURIComponent(file.path)}`} style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
+                            <Eye size={18} /> Read
+                          </Link>
+                        ) : (
+                          <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
+                            <Eye size={18} /> View
+                          </a>
+                        )}
                       </div>
                     </div>
 

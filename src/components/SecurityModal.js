@@ -139,7 +139,7 @@ export default function SecurityModal({ isOpen, onClose, categories }) {
                   ))}
                 </div>
               ) : (
-                <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>No PDF files found in this category.</p>
+                <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>No files found in this category.</p>
               )}
             </div>
           )}

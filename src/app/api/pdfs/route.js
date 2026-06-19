@@ -19,7 +19,7 @@ export async function GET(request) {
     // Ensure it's an array and filter for PDF files
     const files = Array.isArray(data) ? data : [data];
     const pdfs = files
-      .filter((item) => item.type === 'file' && item.name.toLowerCase().endsWith('.pdf'))
+      .filter((item) => item.type === 'file')
       .map((file) => ({
         name: file.name,
         path: file.path,
