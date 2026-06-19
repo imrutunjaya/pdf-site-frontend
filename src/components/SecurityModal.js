@@ -137,8 +137,9 @@ export default function SecurityModal({ isOpen, onClose, categories }) {
                           {actioning === file.path ? <Loader2 size={12} className="animate-spin" /> : <Unlock size={12} />} Decrypt
                         </button>
                       </div>
-                    );
-                  })}
+                    </div>
+                  );
+                })}
                 </div>
               ) : (
                 <p style={{ color: '#6b7280', fontSize: '0.9rem' }}>No files found in this category.</p>
