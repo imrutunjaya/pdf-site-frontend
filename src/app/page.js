@@ -2,8 +2,9 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
-import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw, ExternalLink } from 'lucide-react';
+import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw, ExternalLink, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import SecurityModal from '@/components/SecurityModal';
 
 
 
@@ -152,6 +153,7 @@ export default function Home() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
   const [pdfCoverEnabled, setPdfCoverEnabled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -477,6 +479,14 @@ export default function Home() {
                           </div>
                         </div>
 
+                        <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '0.5rem 0' }}></div>
+                        <h4 style={{ margin: '0.25rem 0.75rem 0.5rem', fontSize: '0.75rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '1px' }}>Security Options</h4>
+
+                        <button onClick={() => { setIsSecurityModalOpen(true); setIsSettingsOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', width: '100%', background: 'transparent', border: 'none', color: '#ef4444', borderRadius: '0.5rem', cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} className="hover-bg">
+                          <Shield size={18} color="#ef4444" />
+                          <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Manage File Locks</span>
+                        </button>
+
 
                       </div>
                     </motion.div>
@@ -795,6 +805,8 @@ export default function Home() {
           .horizontal-branch { left: 1rem !important; width: 1rem !important; }
         }
       `}</style>
+
+      <SecurityModal isOpen={isSecurityModalOpen} onClose={() => setIsSecurityModalOpen(false)} categories={categories} />
     </div>
   );
 }

@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { octokit, GITHUB_OWNER, GITHUB_REPO } from '@/lib/github';
+import { isEncrypted, decryptBuffer } from '@/lib/crypto';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const path = searchParams.get('path');
+  const password = searchParams.get('password');
 
   if (!path) {
     return new NextResponse('File path is required', { status: 400 });
@@ -45,7 +47,25 @@ export async function GET(request) {
     const arrayBuffer = await fileResponse.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    return new NextResponse(buffer, {
+    let finalBuffer = buffer;
+    if (isEncrypted(buffer)) {
+      if (!password) {
+        return new NextResponse(JSON.stringify({ error: 'FILE_ENCRYPTED' }), { 
+          status: 403, 
+          headers: { 'Content-Type': 'application/json' } 
+        });
+      }
+      try {
+        finalBuffer = decryptBuffer(buffer, password);
+      } catch (err) {
+        return new NextResponse(JSON.stringify({ error: 'INVALID_PASSWORD' }), { 
+          status: 401, 
+          headers: { 'Content-Type': 'application/json' } 
+        });
+      }
+    }
+
+    return new NextResponse(finalBuffer, {
       headers: {
         'Content-Type': 'application/pdf',
         // 'Content-Disposition': `inline; filename="${data.name}"`, // inline to view, attachment to download

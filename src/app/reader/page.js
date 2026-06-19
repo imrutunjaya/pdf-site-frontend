@@ -23,6 +23,12 @@ export default function PdfReaderPage({ searchParams }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [direction, setDirection] = useState(0);
   
+  const [pdfData, setPdfData] = useState(null);
+  const [isEncrypted, setIsEncrypted] = useState(false);
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
+  
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showFsClose, setShowFsClose] = useState(true);
   const [showCoverPage, setShowCoverPage] = useState(false);
@@ -137,6 +143,43 @@ export default function PdfReaderPage({ searchParams }) {
     });
   };
 
+  const fetchPdf = useCallback(async (pwd = '') => {
+    setIsFetching(true);
+    setErrorMsg(null);
+    try {
+      let url = `/api/pdf-content?path=${encodeURIComponent(path)}`;
+      if (pwd) url += `&password=${encodeURIComponent(pwd)}`;
+      const res = await fetch(url);
+      
+      if (res.status === 403) {
+        setIsEncrypted(true);
+        setIsFetching(false);
+        return;
+      }
+      if (res.status === 401) {
+        setErrorMsg('Incorrect password');
+        setIsEncrypted(true);
+        setIsFetching(false);
+        return;
+      }
+      if (!res.ok) {
+        throw new Error('Failed to load PDF');
+      }
+      
+      const blob = await res.blob();
+      setPdfData(URL.createObjectURL(blob));
+      setIsEncrypted(false);
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [path]);
+
+  useEffect(() => {
+    if (path) fetchPdf();
+  }, [path, fetchPdf]);
+
   if (!path) {
     return (
       <div style={{ padding: '4rem 1.5rem', textAlign: 'center', background: '#f3f4f6', minHeight: '100vh', color: '#111827' }}>
@@ -146,8 +189,38 @@ export default function PdfReaderPage({ searchParams }) {
     );
   }
 
-  const pdfUrl = `/api/pdf-content?path=${encodeURIComponent(path)}`;
   const fileName = path.split('/').pop().replace('.pdf', '');
+
+  if (isEncrypted && !pdfData) {
+    return (
+      <div style={{ padding: '4rem 1.5rem', textAlign: 'center', background: '#050505', minHeight: '100vh', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '3rem', borderRadius: '1rem', backdropFilter: 'blur(10px)', maxWidth: '400px', width: '100%' }}>
+          <div style={{ width: '64px', height: '64px', background: 'rgba(239,68,68,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', color: '#ef4444' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <h2 style={{ margin: '0 0 1rem 0' }}>Encrypted File</h2>
+          <p style={{ color: '#9ca3af', fontSize: '0.9rem', marginBottom: '2rem' }}>This file is protected. Please enter the password to view it.</p>
+          <form onSubmit={(e) => { e.preventDefault(); fetchPdf(password); }} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <input 
+              type="password" 
+              placeholder="Enter password..." 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.5)', color: '#fff', outline: 'none' }}
+              autoFocus
+            />
+            {errorMsg && <p style={{ color: '#ef4444', fontSize: '0.8rem', margin: 0 }}>{errorMsg}</p>}
+            <button type="submit" disabled={isFetching} style={{ padding: '0.75rem', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.5rem', fontWeight: 600, cursor: isFetching ? 'not-allowed' : 'pointer', opacity: isFetching ? 0.7 : 1 }}>
+              {isFetching ? 'Decrypting...' : 'Decrypt & View'}
+            </button>
+            <button type="button" onClick={() => router.back()} style={{ padding: '0.75rem', background: 'transparent', color: '#9ca3af', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '0.5rem', fontWeight: 600, cursor: 'pointer' }}>
+              Go Back
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   const isSinglePageMode = windowWidth < 800;
 
@@ -241,7 +314,7 @@ export default function PdfReaderPage({ searchParams }) {
               </>
             )}
             
-            <a href={pdfUrl} download={fileName} title="Download" className="icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
+            <a href={pdfData || `/api/pdf-content?path=${encodeURIComponent(path)}`} download={fileName} title="Download" className="icon-btn" style={{ display: 'flex', alignItems: 'center' }}>
               <Download size={18} />
             </a>
             <button title="Fullscreen" className="icon-btn" onClick={toggleFullscreen}><Maximize size={18} /></button>
@@ -280,7 +353,7 @@ export default function PdfReaderPage({ searchParams }) {
         <div style={{ height: '100%', width: '100%', overflow: 'auto', display: 'flex', justifyContent: 'center', alignItems: isSinglePageMode ? 'flex-start' : 'center' }}>
           <div style={{ transition: 'opacity 0.4s ease', opacity: isLoaded ? 1 : 0, width: isSinglePageMode ? '100%' : 'auto', display: 'flex', justifyContent: 'center' }}>
             <Document
-              file={pdfUrl}
+              file={pdfData}
               onLoadSuccess={onDocumentLoadSuccess}
               loading={
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '20vh' }}>
