@@ -65,16 +65,29 @@ export async function GET(request) {
       }
     }
 
+    // Determine content type
+    let contentType = 'application/octet-stream';
+    const ext = data.name.split('.').pop().toLowerCase();
+    if (ext === 'pdf') contentType = 'application/pdf';
+    else if (ext === 'png') contentType = 'image/png';
+    else if (['jpg', 'jpeg'].includes(ext)) contentType = 'image/jpeg';
+    else if (ext === 'gif') contentType = 'image/gif';
+    else if (ext === 'svg') contentType = 'image/svg+xml';
+    else if (ext === 'txt') contentType = 'text/plain';
+    else if (ext === 'html') contentType = 'text/html';
+    else if (['js', 'jsx'].includes(ext)) contentType = 'text/javascript';
+    else if (ext === 'css') contentType = 'text/css';
+    else if (ext === 'json') contentType = 'application/json';
+
     return new NextResponse(finalBuffer, {
       headers: {
-        'Content-Type': 'application/pdf',
-        // 'Content-Disposition': `inline; filename="${data.name}"`, // inline to view, attachment to download
-        'Content-Disposition': `attachment; filename="${data.name}"`,
+        'Content-Type': contentType,
+        'Content-Disposition': `inline; filename="${data.name}"`,
       },
     });
 
   } catch (error) {
-    console.error(`Error fetching PDF content for ${path}:`, error);
-    return new NextResponse('Failed to fetch PDF content', { status: 500 });
+    console.error(`Error fetching file content for ${path}:`, error);
+    return new NextResponse('Failed to fetch file content', { status: 500 });
   }
 }
