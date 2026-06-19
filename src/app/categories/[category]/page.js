@@ -3,7 +3,7 @@
 import { useEffect, useState, use, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { FileText, ArrowLeft, Loader2, AlertCircle, Eye, Download, FolderOpen, AlertTriangle, Upload, Image as ImageIcon, FileCode } from 'lucide-react';
+import { FileText, ArrowLeft, Loader2, AlertCircle, Eye, Download, FolderOpen, AlertTriangle, Image as ImageIcon, FileCode } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function CategoryContent({ params }) {
@@ -14,7 +14,6 @@ function CategoryContent({ params }) {
   
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
@@ -42,41 +41,6 @@ function CategoryContent({ params }) {
   useEffect(() => {
     fetchFiles();
   }, [categoryPath]);
-
-  const handleUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    setError(null);
-
-    try {
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        const base64Content = event.target.result.split(',')[1];
-        
-        const res = await fetch('/api/upload', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            path: `${categoryPath}/${file.name}`,
-            content: base64Content,
-          }),
-        });
-
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Upload failed');
-        
-        // Refresh files list
-        fetchFiles();
-      };
-      reader.readAsDataURL(file);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setUploading(false);
-    }
-  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#050505', color: '#fff', fontFamily: 'sans-serif', position: 'relative', overflowX: 'hidden' }}>
@@ -146,21 +110,11 @@ function CategoryContent({ params }) {
             {/* Vertical Tree Branch Line */}
             <div style={{ position: 'absolute', top: '1.5rem', bottom: '2rem', left: '0', width: '2px', background: 'linear-gradient(to bottom, rgba(59,130,246,0.5), transparent)' }}></div>
             
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', marginLeft: 'clamp(-1.5rem, -4vw, -3rem)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.3)', zIndex: 2 }}>
-                  <FolderOpen size={24} color="#3b82f6" />
-                </div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 300, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem', marginLeft: 'clamp(-1.5rem, -4vw, -3rem)' }}>
+              <div style={{ background: 'rgba(59,130,246,0.1)', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid rgba(59,130,246,0.3)', zIndex: 2 }}>
+                <FolderOpen size={24} color="#3b82f6" />
               </div>
-              
-              <div style={{ zIndex: 2 }}>
-                <input type="file" id="file-upload" style={{ display: 'none' }} onChange={handleUpload} disabled={uploading} />
-                <label htmlFor="file-upload" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#3b82f6', color: '#fff', padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: uploading ? 'not-allowed' : 'pointer', opacity: uploading ? 0.7 : 1, transition: 'background 0.2s', fontWeight: 500, fontSize: '0.9rem' }} className="hover-primary-bg">
-                  {uploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-                  {uploading ? 'Uploading...' : 'Upload File'}
-                </label>
-              </div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 300, margin: 0, color: '#fff', fontFamily: 'monospace' }}>/{categoryName}</h2>
             </div>
 
             {files.map((file, index) => {
@@ -216,9 +170,9 @@ function CategoryContent({ params }) {
                             <Eye size={18} /> Read
                           </Link>
                         ) : (
-                          <a href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
+                          <Link href={`/viewer?path=${encodeURIComponent(file.path)}`} style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
                             <Eye size={18} /> View
-                          </a>
+                          </Link>
                         )}
                       </div>
                     </div>
