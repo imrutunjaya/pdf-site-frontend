@@ -118,6 +118,7 @@ function CategoryContent({ params }) {
             </div>
 
             {files.map((file, index) => {
+              const isDir = file.type === 'dir';
               const fileUrl = `/api/pdf-content?path=${encodeURIComponent(file.path)}`;
               const isPdf = file.name.toLowerCase().endsWith('.pdf');
               const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(file.name);
@@ -126,7 +127,8 @@ function CategoryContent({ params }) {
               let FileIcon = FileText;
               let iconColor = "#9ca3af";
               
-              if (isPdf) { FileIcon = FileText; iconColor = "#ef4444"; }
+              if (isDir) { FileIcon = FolderOpen; iconColor = "#3b82f6"; }
+              else if (isPdf) { FileIcon = FileText; iconColor = "#ef4444"; }
               else if (isImage) { FileIcon = ImageIcon; iconColor = "#10b981"; }
               else if (isCode) { FileIcon = FileCode; iconColor = "#f59e0b"; }
 
@@ -153,26 +155,36 @@ function CategoryContent({ params }) {
                     </div>
                     
                     <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem', justifyContent: 'flex-end', width: '100%', '@media (min-width: 600px)': { width: 'auto' } }}>
-                      <span style={{ color: '#6b7280', fontSize: '0.85rem', fontFamily: 'monospace', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>
-                        {(file.size / 1024 / 1024).toFixed(2)} MB
-                      </span>
+                      {!isDir && file.size && (
+                        <span style={{ color: '#6b7280', fontSize: '0.85rem', fontFamily: 'monospace', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.5rem', borderRadius: '0.25rem' }}>
+                          {(file.size / 1024 / 1024).toFixed(2)} MB
+                        </span>
+                      )}
                       
                       <div style={{ display: 'flex', gap: '0.5rem', width: '100%', justifyContent: 'flex-end' }}>
-                        {/* Report Button */}
-                        <a href={`mailto:pradhanmrutunjaya73@gmail.com?subject=Broken File Report: ${encodeURIComponent(file.name)}`} title="Report Broken File" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-red-bg">
-                          <AlertTriangle size={18} />
-                        </a>
-                        <a href={fileUrl} download={file.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-white-bg">
-                          <Download size={18} />
-                        </a>
-                        {isPdf ? (
-                          <Link href={`/reader?path=${encodeURIComponent(file.path)}`} style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
-                            <Eye size={18} /> Read
+                        {isDir ? (
+                          <Link href={`/categories/${categoryName}?path=${encodeURIComponent(file.path)}`} style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
+                            <FolderOpen size={18} /> Open Folder
                           </Link>
                         ) : (
-                          <Link href={`/viewer?path=${encodeURIComponent(file.path)}`} style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
-                            <Eye size={18} /> View
-                          </Link>
+                          <>
+                            {/* Report Button */}
+                            <a href={`mailto:pradhanmrutunjaya73@gmail.com?subject=Broken File Report: ${encodeURIComponent(file.name)}`} title="Report Broken File" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(239,68,68,0.1)', color: '#ef4444', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-red-bg">
+                              <AlertTriangle size={18} />
+                            </a>
+                            <a href={fileUrl} download={file.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '0.5rem', borderRadius: '0.5rem', transition: 'background 0.2s' }} className="hover-white-bg">
+                              <Download size={18} />
+                            </a>
+                            {isPdf ? (
+                              <Link href={`/reader?path=${encodeURIComponent(file.path)}`} style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
+                                <Eye size={18} /> Read
+                              </Link>
+                            ) : (
+                              <Link href={`/viewer?path=${encodeURIComponent(file.path)}`} style={{ background: '#3b82f6', color: '#fff', padding: '0.5rem 1.25rem', borderRadius: '0.5rem', fontSize: '0.875rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', textDecoration: 'none', transition: 'background 0.2s' }} className="hover-primary-bg">
+                                <Eye size={18} /> View
+                              </Link>
+                            )}
+                          </>
                         )}
                       </div>
                     </div>
