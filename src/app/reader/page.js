@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { ArrowLeft, Loader2, Download, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Sun, Search, BookOpen, Music, Maximize, X, FileText, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Loader2, Download, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Sun, Moon, Search, BookOpen, Music, Maximize, X, FileText, MoreVertical } from 'lucide-react';
 
 const Document = dynamic(() => import('react-pdf').then(mod => mod.Document), { ssr: false });
 const Page = dynamic(() => import('react-pdf').then(mod => mod.Page), { ssr: false });
@@ -22,6 +22,7 @@ export default function PdfReaderPage({ searchParams }) {
   const [windowWidth, setWindowWidth] = useState(1200);
   const [isLoaded, setIsLoaded] = useState(false);
   const [direction, setDirection] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(true);
   
   const [pdfData, setPdfData] = useState(null);
   const [isEncrypted, setIsEncrypted] = useState(false);
@@ -253,15 +254,15 @@ export default function PdfReaderPage({ searchParams }) {
   return (
     <div 
       ref={containerRef}
-      className="light-reader-theme" 
+      className={isDarkMode ? "dark-reader-theme" : "light-reader-theme"} 
       onMouseMove={handleMouseMove}
       style={{ 
         display: 'flex', 
         flexDirection: 'column', 
         height: '100vh', 
         width: '100vw', 
-        background: isSinglePageMode ? '#e5e7eb' : '#f3f4f6', 
-        color: '#111827', 
+        background: isFullscreen ? '#000' : (isDarkMode ? '#111827' : (isSinglePageMode ? '#e5e7eb' : '#f3f4f6')), 
+        color: isDarkMode ? '#f3f4f6' : '#111827', 
         overflow: 'hidden', 
         fontFamily: 'sans-serif' 
       }}
@@ -269,11 +270,11 @@ export default function PdfReaderPage({ searchParams }) {
       
       {/* Top Header Bar - Hidden in Fullscreen */}
       {!isFullscreen && (
-        <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1.5rem', height: '70px', background: '#ffffff', borderBottom: '1px solid #e5e7eb', zIndex: 50, flexShrink: 0 }}>
+        <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1.5rem', height: '70px', background: isDarkMode ? '#1f2937' : '#ffffff', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb', zIndex: 50, flexShrink: 0 }}>
           
           {/* Left: Back & Title Info */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flex: 1 }}>
-            <button onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#374151', fontWeight: 600, fontSize: '0.9rem' }}>
+            <button onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: isDarkMode ? '#e5e7eb' : '#374151', fontWeight: 600, fontSize: '0.9rem' }}>
               <ArrowLeft size={18} strokeWidth={2.5} />
               <span>Back to Library</span>
             </button>
@@ -284,7 +285,7 @@ export default function PdfReaderPage({ searchParams }) {
                   <FileText size={16} color="#78716c" />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <span style={{ fontSize: '1rem', fontWeight: 600, color: isDarkMode ? '#f3f4f6' : '#111827', maxWidth: '250px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {fileName}
                   </span>
                   <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
@@ -297,20 +298,24 @@ export default function PdfReaderPage({ searchParams }) {
 
           {/* Center: Pagination Pill */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
-            <div style={{ background: '#e5e7eb', padding: '0.4rem 1rem', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 500, color: '#374151', minWidth: '140px', textAlign: 'center' }}>
+            <div style={{ background: isDarkMode ? '#374151' : '#e5e7eb', padding: '0.4rem 1rem', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 500, color: isDarkMode ? '#e5e7eb' : '#374151', minWidth: '140px', textAlign: 'center' }}>
               {numPages ? `Pages ${pageNumber}${!isSinglePageMode && pageNumber + 1 <= numPages ? '-' + (pageNumber + 1) : ''} of ${numPages}` : 'Loading...'}
             </div>
           </div>
 
           {/* Right: Action Icons */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, justifyContent: 'flex-end', color: '#4b5563' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, justifyContent: 'flex-end', color: isDarkMode ? '#e5e7eb' : '#4b5563' }}>
+            <button title="Toggle Theme" className="icon-btn" onClick={() => setIsDarkMode(!isDarkMode)}>
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <div style={{ width: '1px', height: '24px', background: isDarkMode ? '#4b5563' : '#e5e7eb', margin: '0 0.25rem' }}></div>
             <button title="Zoom Out" className="icon-btn" onClick={() => setScale(s => Math.max(0.2, s - 0.1))}><ZoomOut size={18} /></button>
             <button title="Zoom In" className="icon-btn" onClick={() => setScale(s => s + 0.1)}><ZoomIn size={18} /></button>
             
             {!isSinglePageMode && (
               <>
                 <button title="Layout" className="icon-btn"><BookOpen size={18} /></button>
-                <div style={{ width: '1px', height: '24px', background: '#e5e7eb', margin: '0 0.25rem' }}></div>
+                <div style={{ width: '1px', height: '24px', background: isDarkMode ? '#4b5563' : '#e5e7eb', margin: '0 0.25rem' }}></div>
               </>
             )}
             
@@ -332,7 +337,7 @@ export default function PdfReaderPage({ searchParams }) {
           <button 
             onClick={() => changePage(-1)}
             disabled={pageNumber <= 1}
-            style={{ position: 'absolute', left: '2rem', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: pageNumber <= 1 ? '#d1d5db' : '#374151', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', cursor: pageNumber <= 1 ? 'not-allowed' : 'pointer', zIndex: 40, border: '1px solid #f3f4f6' }}
+            style={{ position: 'absolute', left: '2rem', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', background: isDarkMode ? '#1f2937' : '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: pageNumber <= 1 ? (isDarkMode ? '#4b5563' : '#d1d5db') : (isDarkMode ? '#e5e7eb' : '#374151'), boxShadow: '0 4px 12px rgba(0,0,0,0.08)', cursor: pageNumber <= 1 ? 'not-allowed' : 'pointer', zIndex: 40, border: isDarkMode ? '1px solid #374151' : '1px solid #f3f4f6' }}
           >
             <ChevronLeft size={24} strokeWidth={1.5} />
           </button>
@@ -343,7 +348,7 @@ export default function PdfReaderPage({ searchParams }) {
           <button 
             onClick={() => changePage(1)}
             disabled={pageNumber >= numPages && (isSinglePageMode || pageNumber + 1 >= numPages)}
-            style={{ position: 'absolute', right: '2rem', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', background: '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: (pageNumber >= numPages) ? '#d1d5db' : '#374151', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', cursor: (pageNumber >= numPages) ? 'not-allowed' : 'pointer', zIndex: 40, border: '1px solid #f3f4f6' }}
+            style={{ position: 'absolute', right: '2rem', top: '50%', transform: 'translateY(-50%)', width: '48px', height: '48px', background: isDarkMode ? '#1f2937' : '#ffffff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: (pageNumber >= numPages) ? (isDarkMode ? '#4b5563' : '#d1d5db') : (isDarkMode ? '#e5e7eb' : '#374151'), boxShadow: '0 4px 12px rgba(0,0,0,0.08)', cursor: (pageNumber >= numPages) ? 'not-allowed' : 'pointer', zIndex: 40, border: isDarkMode ? '1px solid #374151' : '1px solid #f3f4f6' }}
           >
             <ChevronRight size={24} strokeWidth={1.5} />
           </button>
@@ -433,7 +438,7 @@ export default function PdfReaderPage({ searchParams }) {
       
       <style>{`
         /* Overrides to ensure the reader stays light regardless of global dark mode */
-        .light-reader-theme * {
+        .light-reader-theme *, .dark-reader-theme * {
           box-sizing: border-box;
         }
         .icon-btn {
@@ -443,13 +448,27 @@ export default function PdfReaderPage({ searchParams }) {
           color: inherit;
           transition: color 0.2s;
         }
-        .icon-btn:hover {
-          color: #111827;
-        }
+        .light-reader-theme .icon-btn:hover { color: #111827; }
+        .dark-reader-theme .icon-btn:hover { color: #fff; }
+        
         .book-page canvas {
           background: white;
           box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
           border-radius: 4px;
+        }
+
+        /* Dark Mode PDF Inversion */
+        .dark-reader-theme .book-page canvas, .dark-reader-theme .react-pdf__Page__textContent {
+          filter: invert(1) hue-rotate(180deg);
+        }
+        .dark-reader-theme .react-pdf__Page__annotations {
+          filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* Allow Copying Text */
+        .react-pdf__Page__textContent {
+          user-select: text !important;
+          cursor: text !important;
         }
         /* Style the gap between pages to look like a book spine crease */
         .book-page:first-child:not(.mobile-page):not(.cover-page) canvas {

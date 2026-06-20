@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Download, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Loader2, Download, AlertCircle, Sun, Moon } from 'lucide-react';
 
 export default function ViewerPage({ searchParams }) {
   const resolvedParams = use(searchParams);
@@ -12,6 +12,7 @@ export default function ViewerPage({ searchParams }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [content, setContent] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const fileExt = path ? path.split('.').pop().toLowerCase() : '';
   const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(fileExt);
@@ -57,26 +58,29 @@ export default function ViewerPage({ searchParams }) {
   const fileName = path.split('/').pop();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', background: '#f3f4f6', color: '#111827', overflow: 'hidden', fontFamily: 'sans-serif' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', background: isDarkMode ? '#111827' : '#f3f4f6', color: isDarkMode ? '#f3f4f6' : '#111827', overflow: 'hidden', fontFamily: 'sans-serif' }}>
       
       {/* Top Header Bar */}
-      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1.5rem', height: '70px', background: '#ffffff', borderBottom: '1px solid #e5e7eb', zIndex: 50, flexShrink: 0 }}>
+      <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1.5rem', height: '70px', background: isDarkMode ? '#1f2937' : '#ffffff', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb', zIndex: 50, flexShrink: 0 }}>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-          <button onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#374151', fontWeight: 600, fontSize: '0.9rem', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
+          <button onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: isDarkMode ? '#e5e7eb' : '#374151', fontWeight: 600, fontSize: '0.9rem', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
             <ArrowLeft size={18} strokeWidth={2.5} />
             <span>Back to Library</span>
           </button>
           
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <span style={{ fontSize: '1rem', fontWeight: 600, color: isDarkMode ? '#f3f4f6' : '#111827', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {fileName}
             </span>
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <a href={fileUrl} download={fileName} title="Download" style={{ display: 'flex', alignItems: 'center', color: '#4b5563', textDecoration: 'none' }}>
+          <button onClick={() => setIsDarkMode(!isDarkMode)} style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: isDarkMode ? '#e5e7eb' : '#4b5563', display: 'flex', alignItems: 'center' }}>
+            {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <a href={fileUrl} download={fileName} title="Download" style={{ display: 'flex', alignItems: 'center', color: isDarkMode ? '#e5e7eb' : '#4b5563', textDecoration: 'none' }}>
             <Download size={18} />
           </a>
         </div>
@@ -104,10 +108,12 @@ export default function ViewerPage({ searchParams }) {
             />
           </div>
         ) : isText ? (
-          <div style={{ width: '100%', maxWidth: '1000px', background: '#fff', borderRadius: '0.5rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
-            <pre style={{ margin: 0, padding: '1.5rem', overflowX: 'auto', whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: '0.9rem', lineHeight: '1.5', color: '#374151', minHeight: '100%' }}>
-              <code>{content}</code>
-            </pre>
+          <div style={{ width: '100%', maxWidth: '1000px', height: '100%', display: 'flex', flexDirection: 'column', background: isDarkMode ? '#1f2937' : '#fff', borderRadius: '0.5rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', userSelect: 'text' }}>
+              <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: '0.9rem', lineHeight: '1.5', color: isDarkMode ? '#e5e7eb' : '#374151' }}>
+                <code>{content}</code>
+              </pre>
+            </div>
           </div>
         ) : isOffice ? (
           <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

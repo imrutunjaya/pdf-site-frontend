@@ -167,8 +167,8 @@ export default function Home() {
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
 
-  // viewMode options: 'flowchart-center', 'flowchart-left', 'list', 'grid'
-  const [viewMode, setViewMode] = useState('flowchart-center');
+  // viewMode options: 'flowchart-left', 'list', 'grid'
+  const [viewMode, setViewMode] = useState('flowchart-left');
   const settingsRef = useRef(null);
 
   useEffect(() => {
@@ -446,11 +446,6 @@ export default function Home() {
                       <h4 style={{ margin: '0.5rem 0.75rem', fontSize: '0.75rem', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '1px' }}>View Options</h4>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                         
-                        <button onClick={() => handleViewChange('flowchart-center')} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', width: '100%', background: viewMode === 'flowchart-center' ? 'rgba(59,130,246,0.1)' : 'transparent', border: 'none', color: viewMode === 'flowchart-center' ? '#fff' : '#9ca3af', borderRadius: '0.5rem', cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} className="hover-bg">
-                          <AlignCenter size={18} color={viewMode === 'flowchart-center' ? '#60a5fa' : 'currentColor'} />
-                          <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Flowchart (Center)</span>
-                        </button>
-                        
                         <button onClick={() => handleViewChange('flowchart-left')} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', width: '100%', background: viewMode === 'flowchart-left' ? 'rgba(59,130,246,0.1)' : 'transparent', border: 'none', color: viewMode === 'flowchart-left' ? '#fff' : '#9ca3af', borderRadius: '0.5rem', cursor: 'pointer', textAlign: 'left', transition: 'background 0.2s' }} className="hover-bg">
                           <AlignLeft size={18} color={viewMode === 'flowchart-left' ? '#60a5fa' : 'currentColor'} />
                           <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Flowchart (Left)</span>
@@ -527,7 +522,7 @@ export default function Home() {
                       display: viewMode === 'grid' ? 'grid' : 'flex',
                       flexDirection: viewMode === 'grid' ? 'row' : 'column',
                       gridTemplateColumns: viewMode === 'grid' ? 'repeat(auto-fill, minmax(300px, 1fr))' : 'none',
-                      alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
+                      alignItems: 'flex-start', 
                       gap: viewMode === 'grid' ? '1.5rem' : '0',
                       width: '100%',
                       position: 'relative'
@@ -541,7 +536,7 @@ export default function Home() {
                       {section.subCategories.map((cat, index) => (
                         <div className="flowchart-node-wrapper" key={cat.path} style={{ 
                           display: 'flex', flexDirection: 'column', 
-                          alignItems: viewMode === 'flowchart-center' ? 'center' : 'flex-start', 
+                          alignItems: 'flex-start', 
                           width: '100%',
                           position: 'relative',
                           paddingLeft: viewMode === 'flowchart-left' ? '5rem' : '0',
@@ -553,18 +548,7 @@ export default function Home() {
                             <div className="horizontal-branch" style={{ position: 'absolute', top: '50%', left: '2.5rem', width: '2.5rem', height: '2px', background: 'rgba(59,130,246,0.3)', zIndex: 1, transform: 'translateY(-50%)' }}></div>
                           )}
 
-                          {/* Center Flowchart Connectors */}
-                          {viewMode === 'flowchart-center' && (
-                            <motion.div variants={itemVariants} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                              <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)' }}></div>
-                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.2)', color: '#9ca3af', fontSize: '1rem', fontWeight: 700 }}>
-                                {index + 1}
-                              </div>
-                              <div style={{ width: '2px', height: '20px', background: 'rgba(255,255,255,0.2)', position: 'relative' }}>
-                                <div style={{ position: 'absolute', bottom: 0, left: '-4px', width: 0, height: 0, borderLeft: '5px solid transparent', borderRight: '5px solid transparent', borderTop: '6px solid rgba(255,255,255,0.2)' }}></div>
-                              </div>
-                            </motion.div>
-                          )}
+
 
                           {/* Node Card */}
                           <motion.div variants={itemVariants} style={{ width: '100%', marginBottom: (viewMode === 'list' || viewMode === 'grid') ? '1rem' : '0' }}>
