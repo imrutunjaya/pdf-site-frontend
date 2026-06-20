@@ -23,7 +23,7 @@ export default function PdfReaderPage({ searchParams }) {
   const [windowWidth, setWindowWidth] = useState(1200);
   const [isLoaded, setIsLoaded] = useState(false);
   const [direction, setDirection] = useState(0);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [showToc, setShowToc] = useState(false);
   
   const [pdfData, setPdfData] = useState(null);

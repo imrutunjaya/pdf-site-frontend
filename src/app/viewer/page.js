@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState, use, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Download, AlertCircle, Sun, Moon, Menu, X, List } from 'lucide-react';
 
@@ -12,7 +12,7 @@ export default function ViewerPage({ searchParams }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [content, setContent] = useState(null);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [showToc, setShowToc] = useState(false);
   const [processedText, setProcessedText] = useState({ html: '', toc: [] });
   const contentRef = useRef(null);
