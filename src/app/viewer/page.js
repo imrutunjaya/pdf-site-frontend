@@ -19,7 +19,9 @@ export default function ViewerPage({ searchParams }) {
 
   const fileExt = path ? path.split('.').pop().toLowerCase() : '';
   const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(fileExt);
-  const isText = ['txt', 'md', 'js', 'jsx', 'ts', 'tsx', 'json', 'html', 'css', 'py', 'java', 'c', 'cpp'].includes(fileExt);
+  const isCode = ['js', 'jsx', 'ts', 'tsx', 'json', 'html', 'css', 'py', 'java', 'c', 'cpp'].includes(fileExt);
+  const isPlainText = ['txt', 'md'].includes(fileExt);
+  const isText = isCode || isPlainText;
   const isOffice = ['docx', 'doc', 'pptx', 'ppt', 'xlsx', 'xls'].includes(fileExt);
 
   const fileUrl = path ? `/api/pdf-content?path=${encodeURIComponent(path)}` : '';
@@ -54,23 +56,26 @@ export default function ViewerPage({ searchParams }) {
       let tocList = [];
       let html = content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       
+      const headerBoxStyle = `background: ${isDarkMode ? '#1e293b' : '#eff6ff'}; border-left: 4px solid #3b82f6; padding: 1rem 1.5rem; margin: 2.5rem 0 1.5rem 0; font-weight: 700; color: ${isDarkMode ? '#60a5fa' : '#1d4ed8'}; border-radius: 0 0.5rem 0.5rem 0; font-family: system-ui, -apple-system, sans-serif; display: block; box-shadow: 0 1px 3px rgba(0,0,0,0.1);`;
+
       html = html.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, title, offset) => {
         const id = `heading-${offset}`;
         tocList.push({ level: hashes.length, title, id });
-        return `<span id="${id}" style="color: #3b82f6; font-weight: bold; margin-top: 1rem; display: inline-block;">${match}</span>`;
+        const fontSize = 1.7 - (hashes.length - 1) * 0.15;
+        return `<div id="${id}" style="${headerBoxStyle} font-size: ${fontSize}rem; letter-spacing: -0.02em;">${title}</div>`;
       });
       
       if (tocList.length === 0) {
         html = html.replace(/^((?:CHAPTER|PART|SECTION|MODULE|UNIT)\s+[A-Z0-9]+(?:[:\-\s]+[A-Z0-9\s]+)?)$/gmi, (match, title, offset) => {
           const id = `heading-${offset}`;
           tocList.push({ level: 1, title: title.trim(), id });
-          return `<span id="${id}" style="color: #3b82f6; font-weight: bold; margin-top: 1rem; display: inline-block;">${match}</span>`;
+          return `<div id="${id}" style="${headerBoxStyle} font-size: 1.5rem; letter-spacing: -0.02em;">${title}</div>`;
         });
       }
       
       setProcessedText({ html, toc: tocList });
     }
-  }, [content, isText]);
+  }, [content, isText, isDarkMode]);
 
   const scrollToHeading = (id) => {
     const el = document.getElementById(id);
@@ -174,7 +179,7 @@ export default function ViewerPage({ searchParams }) {
           </aside>
         )}
 
-        <main style={{ flex: 1, position: 'relative', overflow: 'auto', padding: '2rem', display: 'flex', justifyContent: 'center' }}>
+        <main style={{ flex: 1, position: 'relative', overflow: 'auto', padding: isText ? '0' : '2rem', display: 'flex', justifyContent: 'center' }}>
         
         {loading ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '20vh' }}>
@@ -195,10 +200,19 @@ export default function ViewerPage({ searchParams }) {
             />
           </div>
         ) : isText ? (
-          <div style={{ width: '100%', maxWidth: '1000px', height: '100%', display: 'flex', flexDirection: 'column', background: isDarkMode ? '#1f2937' : '#fff', borderRadius: '0.5rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
-            <div ref={contentRef} style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', userSelect: 'text', position: 'relative' }}>
+          <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', background: isDarkMode ? '#111827' : '#f9fafb', overflow: 'hidden' }}>
+            <div ref={contentRef} style={{ flex: 1, overflowY: 'auto', padding: '2rem 5vw', userSelect: 'text', position: 'relative' }}>
               <pre 
-                style={{ margin: 0, whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: '0.9rem', lineHeight: '1.5', color: isDarkMode ? '#e5e7eb' : '#374151', fontFamily: 'monospace' }}
+                style={{ 
+                  margin: 0, 
+                  whiteSpace: 'pre-wrap', 
+                  wordWrap: 'break-word', 
+                  fontSize: isPlainText ? '1.05rem' : '0.9rem', 
+                  lineHeight: isPlainText ? '1.8' : '1.5', 
+                  color: isDarkMode ? '#d1d5db' : '#374151', 
+                  fontFamily: isPlainText ? 'system-ui, -apple-system, sans-serif' : 'monospace',
+                  maxWidth: '100%', // Removed previous 1000px limits to use full width
+                }}
                 dangerouslySetInnerHTML={{ __html: processedText.html }}
               />
             </div>
