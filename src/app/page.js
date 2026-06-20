@@ -615,14 +615,16 @@ export default function Home() {
                 className="readme-container"
                 style={{
                   marginTop: '4rem',
-                  padding: '2rem',
+                  padding: '2rem 5vw',
                   background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.05)',
-                  borderRadius: '1rem',
+                  borderTop: '1px solid rgba(255,255,255,0.05)',
+                  borderBottom: '1px solid rgba(255,255,255,0.05)',
                   backdropFilter: 'blur(10px)',
                   color: '#d1d5db',
                   lineHeight: '1.7',
-                  width: '100%'
+                  width: 'calc(100% + 2rem)',
+                  marginLeft: '-1rem',
+                  marginRight: '-1rem'
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#60a5fa', fontWeight: 600 }}>

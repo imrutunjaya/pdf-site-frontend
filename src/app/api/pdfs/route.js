@@ -38,6 +38,7 @@ export async function GET(request) {
     }
 
     const pdfs = files
+      .filter((file) => file.name.toLowerCase() !== 'readme.md')
       .map((file) => ({
         name: file.name,
         path: file.path,
