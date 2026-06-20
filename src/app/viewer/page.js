@@ -2,7 +2,7 @@
 
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Download, AlertCircle, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Loader2, Download, AlertCircle, Sun, Moon, Menu, X, List } from 'lucide-react';
 
 export default function ViewerPage({ searchParams }) {
   const resolvedParams = use(searchParams);
@@ -13,6 +13,9 @@ export default function ViewerPage({ searchParams }) {
   const [error, setError] = useState(null);
   const [content, setContent] = useState(null);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [showToc, setShowToc] = useState(false);
+  const [processedText, setProcessedText] = useState({ html: '', toc: [] });
+  const contentRef = useRef(null);
 
   const fileExt = path ? path.split('.').pop().toLowerCase() : '';
   const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(fileExt);
@@ -46,6 +49,40 @@ export default function ViewerPage({ searchParams }) {
       });
   }, [path, fileUrl, isText, isImage]);
 
+  useEffect(() => {
+    if (isText && content) {
+      let tocList = [];
+      let html = content.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      
+      html = html.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, title, offset) => {
+        const id = `heading-${offset}`;
+        tocList.push({ level: hashes.length, title, id });
+        return `<span id="${id}" style="color: #3b82f6; font-weight: bold; margin-top: 1rem; display: inline-block;">${match}</span>`;
+      });
+      
+      if (tocList.length === 0) {
+        html = html.replace(/^((?:CHAPTER|PART|SECTION|MODULE|UNIT)\s+[A-Z0-9]+(?:[:\-\s]+[A-Z0-9\s]+)?)$/gmi, (match, title, offset) => {
+          const id = `heading-${offset}`;
+          tocList.push({ level: 1, title: title.trim(), id });
+          return `<span id="${id}" style="color: #3b82f6; font-weight: bold; margin-top: 1rem; display: inline-block;">${match}</span>`;
+        });
+      }
+      
+      setProcessedText({ html, toc: tocList });
+    }
+  }, [content, isText]);
+
+  const scrollToHeading = (id) => {
+    const el = document.getElementById(id);
+    if (el && contentRef.current) {
+      contentRef.current.scrollTo({
+        top: el.offsetTop - 20,
+        behavior: 'smooth'
+      });
+    }
+    if (window.innerWidth < 768) setShowToc(false);
+  };
+
   if (!path) {
     return (
       <div style={{ padding: '4rem', textAlign: 'center', background: '#f3f4f6', minHeight: '100vh', color: '#111827' }}>
@@ -63,7 +100,12 @@ export default function ViewerPage({ searchParams }) {
       {/* Top Header Bar */}
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1.5rem', height: '70px', background: isDarkMode ? '#1f2937' : '#ffffff', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb', zIndex: 50, flexShrink: 0 }}>
         
-        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {isText && processedText.toc.length > 0 && (
+            <button onClick={() => setShowToc(!showToc)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: isDarkMode ? '#e5e7eb' : '#374151', cursor: 'pointer', padding: '0.5rem' }}>
+              <Menu size={20} />
+            </button>
+          )}
           <button onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: isDarkMode ? '#e5e7eb' : '#374151', fontWeight: 600, fontSize: '0.9rem', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
             <ArrowLeft size={18} strokeWidth={2.5} />
             <span>Back to Library</span>
@@ -87,7 +129,52 @@ export default function ViewerPage({ searchParams }) {
       </header>
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, position: 'relative', overflow: 'auto', padding: '2rem', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
+        
+        {/* TOC Sidebar */}
+        {isText && showToc && processedText.toc.length > 0 && (
+          <aside style={{ 
+            width: '280px', 
+            background: isDarkMode ? '#1f2937' : '#ffffff', 
+            borderRight: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb',
+            display: 'flex', flexDirection: 'column',
+            position: window.innerWidth < 768 ? 'absolute' : 'relative',
+            height: '100%', zIndex: 40,
+            boxShadow: window.innerWidth < 768 ? '4px 0 15px rgba(0,0,0,0.1)' : 'none'
+          }}>
+            <div style={{ padding: '1rem 1.5rem', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
+                <List size={18} /> Table of Contents
+              </div>
+              {window.innerWidth < 768 && (
+                <button onClick={() => setShowToc(false)} style={{ background: 'none', border: 'none', color: isDarkMode ? '#9ca3af' : '#6b7280' }}><X size={18}/></button>
+              )}
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }} className="custom-scrollbar">
+              {processedText.toc.map((item, i) => (
+                <div 
+                  key={i} 
+                  onClick={() => scrollToHeading(item.id)}
+                  style={{ 
+                    padding: '0.5rem', 
+                    paddingLeft: `${(item.level - 1) * 1 + 0.5}rem`,
+                    fontSize: '0.85rem', 
+                    color: isDarkMode ? '#d1d5db' : '#4b5563',
+                    cursor: 'pointer',
+                    borderRadius: '0.25rem',
+                    marginBottom: '0.25rem'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = isDarkMode ? '#374151' : '#f3f4f6'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  {item.title}
+                </div>
+              ))}
+            </div>
+          </aside>
+        )}
+
+        <main style={{ flex: 1, position: 'relative', overflow: 'auto', padding: '2rem', display: 'flex', justifyContent: 'center' }}>
         
         {loading ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', marginTop: '20vh' }}>
@@ -109,10 +196,11 @@ export default function ViewerPage({ searchParams }) {
           </div>
         ) : isText ? (
           <div style={{ width: '100%', maxWidth: '1000px', height: '100%', display: 'flex', flexDirection: 'column', background: isDarkMode ? '#1f2937' : '#fff', borderRadius: '0.5rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', overflow: 'hidden' }}>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', userSelect: 'text' }}>
-              <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: '0.9rem', lineHeight: '1.5', color: isDarkMode ? '#e5e7eb' : '#374151' }}>
-                <code>{content}</code>
-              </pre>
+            <div ref={contentRef} style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', userSelect: 'text', position: 'relative' }}>
+              <pre 
+                style={{ margin: 0, whiteSpace: 'pre-wrap', wordWrap: 'break-word', fontSize: '0.9rem', lineHeight: '1.5', color: isDarkMode ? '#e5e7eb' : '#374151', fontFamily: 'monospace' }}
+                dangerouslySetInnerHTML={{ __html: processedText.html }}
+              />
             </div>
           </div>
         ) : isOffice ? (
@@ -148,7 +236,8 @@ export default function ViewerPage({ searchParams }) {
           </div>
         )}
 
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

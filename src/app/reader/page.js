@@ -6,10 +6,11 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { ArrowLeft, Loader2, Download, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Sun, Moon, Search, BookOpen, Music, Maximize, X, FileText, MoreVertical } from 'lucide-react';
+import { ArrowLeft, Loader2, Download, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Sun, Moon, Search, BookOpen, Music, Maximize, X, FileText, MoreVertical, Menu, List } from 'lucide-react';
 
 const Document = dynamic(() => import('react-pdf').then(mod => mod.Document), { ssr: false });
 const Page = dynamic(() => import('react-pdf').then(mod => mod.Page), { ssr: false });
+const Outline = dynamic(() => import('react-pdf').then(mod => mod.Outline), { ssr: false });
 
 export default function PdfReaderPage({ searchParams }) {
   const resolvedParams = use(searchParams);
@@ -23,6 +24,7 @@ export default function PdfReaderPage({ searchParams }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [direction, setDirection] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [showToc, setShowToc] = useState(false);
   
   const [pdfData, setPdfData] = useState(null);
   const [isEncrypted, setIsEncrypted] = useState(false);
@@ -273,8 +275,11 @@ export default function PdfReaderPage({ searchParams }) {
         <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1.5rem', height: '70px', background: isDarkMode ? '#1f2937' : '#ffffff', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb', zIndex: 50, flexShrink: 0 }}>
           
           {/* Left: Back & Title Info */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flex: 1 }}>
-            <button onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: isDarkMode ? '#e5e7eb' : '#374151', fontWeight: 600, fontSize: '0.9rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+            <button onClick={() => setShowToc(!showToc)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', color: isDarkMode ? '#e5e7eb' : '#374151', cursor: 'pointer', padding: '0.5rem' }}>
+              <Menu size={20} />
+            </button>
+            <button onClick={() => router.back()} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: isDarkMode ? '#e5e7eb' : '#374151', fontWeight: 600, fontSize: '0.9rem', background: 'transparent', border: 'none', cursor: 'pointer', padding: 0 }}>
               <ArrowLeft size={18} strokeWidth={2.5} />
               <span>Back to Library</span>
             </button>
@@ -328,8 +333,45 @@ export default function PdfReaderPage({ searchParams }) {
       )}
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, position: 'relative', overflow: 'hidden', padding: '0', background: isFullscreen ? '#000' : 'transparent', display: 'flex', flexDirection: 'column' }}>
+      <main style={{ flex: 1, position: 'relative', overflow: 'hidden', padding: '0', background: isFullscreen ? '#000' : 'transparent', display: 'flex', flexDirection: 'row' }}>
         
+        {/* TOC Sidebar */}
+        {showToc && !isFullscreen && (
+          <aside style={{ 
+            width: '280px', 
+            background: isDarkMode ? '#1f2937' : '#ffffff', 
+            borderRight: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb',
+            display: 'flex', flexDirection: 'column',
+            position: window.innerWidth < 768 ? 'absolute' : 'relative',
+            height: '100%', zIndex: 45,
+            boxShadow: window.innerWidth < 768 ? '4px 0 15px rgba(0,0,0,0.1)' : 'none'
+          }}>
+            <div style={{ padding: '1rem 1.5rem', borderBottom: isDarkMode ? '1px solid #374151' : '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}>
+                <List size={18} /> Table of Contents
+              </div>
+              {window.innerWidth < 768 && (
+                <button onClick={() => setShowToc(false)} style={{ background: 'none', border: 'none', color: isDarkMode ? '#9ca3af' : '#6b7280', cursor: 'pointer' }}><X size={18}/></button>
+              )}
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '1rem' }} className="custom-scrollbar toc-container">
+              {pdfData ? (
+                <Document file={pdfData}>
+                  <Outline 
+                    onItemClick={({ pageNumber }) => {
+                      if (pageNumber) setPageNumber(Number(pageNumber));
+                      if (window.innerWidth < 768) setShowToc(false);
+                    }}
+                  />
+                </Document>
+              ) : (
+                <p style={{ color: '#6b7280', textAlign: 'center', marginTop: '2rem' }}>Loading Outline...</p>
+              )}
+            </div>
+          </aside>
+        )}
+
+        <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column' }}>
 
 
         {/* Floating Side Nav - Left (Hidden in Mobile/Fullscreen for clean look, replaced by click areas) */}
@@ -434,6 +476,7 @@ export default function PdfReaderPage({ searchParams }) {
             </Document>
           </div>
         </div>
+        </div>
       </main>
       
       <style>{`
@@ -441,6 +484,39 @@ export default function PdfReaderPage({ searchParams }) {
         .light-reader-theme *, .dark-reader-theme * {
           box-sizing: border-box;
         }
+        
+        /* TOC Styles */
+        .toc-container .react-pdf__Outline {
+          font-size: 0.85rem;
+        }
+        .toc-container .react-pdf__Outline ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+        .toc-container .react-pdf__Outline ul ul {
+          padding-left: 1rem;
+        }
+        .toc-container .react-pdf__Outline li {
+          margin-bottom: 0.25rem;
+        }
+        .toc-container .react-pdf__Outline a {
+          display: block;
+          padding: 0.4rem 0.5rem;
+          color: inherit;
+          text-decoration: none;
+          border-radius: 0.25rem;
+          transition: background 0.2s;
+        }
+        .light-reader-theme .toc-container .react-pdf__Outline a:hover {
+          background: #f3f4f6;
+          color: #3b82f6;
+        }
+        .dark-reader-theme .toc-container .react-pdf__Outline a:hover {
+          background: #374151;
+          color: #60a5fa;
+        }
+
         .icon-btn {
           background: transparent;
           border: none;
