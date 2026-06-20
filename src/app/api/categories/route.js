@@ -3,12 +3,29 @@ import { octokit, GITHUB_OWNER, GITHUB_REPO } from '@/lib/github';
 
 export async function GET() {
   try {
-    // Fetch the root directory contents of the repository
     const { data: rootData } = await octokit.rest.repos.getContent({
       owner: GITHUB_OWNER,
       repo: GITHUB_REPO,
       path: '',
     });
+
+    let readmeContent = null;
+    const readmeFile = rootData.find((item) => item.type === 'file' && item.name.toLowerCase() === 'readme.md');
+    
+    if (readmeFile) {
+      try {
+        const { data: fileData } = await octokit.rest.repos.getContent({
+          owner: GITHUB_OWNER,
+          repo: GITHUB_REPO,
+          path: readmeFile.path,
+        });
+        if (fileData.content) {
+          readmeContent = Buffer.from(fileData.content, 'base64').toString('utf8');
+        }
+      } catch (err) {
+        console.error('Failed to fetch root README:', err);
+      }
+    }
 
     // Filter out only directories (these are our parent sections)
     const rootDirs = rootData.filter((item) => item.type === 'dir' && !item.name.startsWith('.'));
@@ -46,7 +63,7 @@ export async function GET() {
       })
     );
 
-    return NextResponse.json({ categories });
+    return NextResponse.json({ categories, readme: readmeContent });
   } catch (error) {
     console.error('Error fetching categories:', error);
     return NextResponse.json({ error: 'Failed to fetch categories. Make sure your GitHub token and repository settings are correct.' }, { status: 500 });

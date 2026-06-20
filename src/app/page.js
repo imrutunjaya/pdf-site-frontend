@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { FolderOpen, FileText, Info, X, Mail, Settings, LayoutList, AlignLeft, AlignCenter, Grid, ChevronsDown, ChevronsUp, Search, RefreshCw, ExternalLink, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 import SecurityModal from '@/components/SecurityModal';
 
 
@@ -149,6 +150,7 @@ const TypingBlock = ({ onComplete }) => {
 
 export default function Home() {
   const [categories, setCategories] = useState([]);
+  const [readme, setReadme] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isAboutModalOpen, setIsAboutModalOpen] = useState(false);
@@ -239,7 +241,10 @@ export default function Home() {
     try {
       const res = await fetch('/api/categories');
       const data = await res.json();
-      if (res.ok) setCategories(data.categories || []);
+      if (res.ok) {
+        setCategories(data.categories || []);
+        setReadme(data.readme || null);
+      }
       
       // Let the user see the spinner for a minimum time
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -263,7 +268,10 @@ export default function Home() {
       try {
         const res = await fetch('/api/categories');
         const data = await res.json();
-        if (res.ok) setCategories(data.categories || []);
+        if (res.ok) {
+          setCategories(data.categories || []);
+          setReadme(data.readme || null);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -595,6 +603,34 @@ export default function Home() {
               <motion.div variants={itemVariants} style={{ textAlign: 'center', padding: '4rem', color: '#6b7280', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '1rem', marginTop: '2rem' }}>
                 <FileText size={48} style={{ opacity: 0.2, margin: '0 auto 1rem auto' }} />
                 <p style={{ fontFamily: 'monospace' }}>No nodes available.</p>
+              </motion.div>
+            )}
+
+            {/* Readme rendering */}
+            {readme && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="readme-container"
+                style={{
+                  marginTop: '4rem',
+                  padding: '2rem',
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.05)',
+                  borderRadius: '1rem',
+                  backdropFilter: 'blur(10px)',
+                  color: '#d1d5db',
+                  lineHeight: '1.7',
+                  width: '100%'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#60a5fa', fontWeight: 600 }}>
+                  <FileText size={20} /> README.md
+                </div>
+                <div className="markdown-body" style={{ overflowX: 'auto' }}>
+                  <ReactMarkdown>{readme}</ReactMarkdown>
+                </div>
               </motion.div>
             )}
           </div>

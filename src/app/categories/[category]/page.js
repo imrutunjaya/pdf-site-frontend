@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { FileText, ArrowLeft, Loader2, AlertCircle, Eye, Download, FolderOpen, AlertTriangle, Image as ImageIcon, FileCode } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 
 function CategoryContent({ params }) {
   const resolvedParams = use(params);
@@ -13,6 +14,7 @@ function CategoryContent({ params }) {
   const categoryPath = searchParams.get('path') || categoryName;
   
   const [files, setFiles] = useState([]);
+  const [readme, setReadme] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -31,6 +33,7 @@ function CategoryContent({ params }) {
       if (!res.ok) throw new Error(data.error || 'Failed to fetch');
       
       setFiles(data.pdfs || []);
+      setReadme(data.readme || null);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -194,6 +197,37 @@ function CategoryContent({ params }) {
               )
             })}
           </div>
+        )}
+
+        {/* Readme rendering */}
+        {readme && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="readme-container"
+            style={{
+              marginTop: '4rem',
+              padding: '2rem',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.05)',
+              borderRadius: '1rem',
+              backdropFilter: 'blur(10px)',
+              color: '#d1d5db',
+              lineHeight: '1.7',
+              width: '100%',
+              maxWidth: '1000px',
+              marginLeft: 'auto',
+              marginRight: 'auto'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#60a5fa', fontWeight: 600 }}>
+              <FileText size={20} /> README.md
+            </div>
+            <div className="markdown-body" style={{ overflowX: 'auto' }}>
+              <ReactMarkdown>{readme}</ReactMarkdown>
+            </div>
+          </motion.div>
         )}
       </main>
 
